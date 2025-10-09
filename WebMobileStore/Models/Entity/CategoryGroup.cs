@@ -12,8 +12,10 @@ namespace WebMobileStore.Models.Entity
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long CategoryGroupId { get; set; }
+        [Column(TypeName = "nvarchar(300)")]
         public string CategoryGroupName { get; set; }
-        public string Description { get; set; }
+        [Column(TypeName = "nvarchar(400)")]
+        public string? Description { get; set; }
         public String Image {  get; set; }
 
         public ICollection<Categories> Categories { get; set; }

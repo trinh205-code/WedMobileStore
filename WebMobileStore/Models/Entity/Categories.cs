@@ -9,6 +9,9 @@ namespace WebMobileStore.Models.Entity
             [Key]
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
             public long CategoryId { get; set; }
+
+            [Column(TypeName = "nvarchar(300)")]
+
             public string CategoryName { get; set; }
             public long CategoryGroupId { get; set; }
 

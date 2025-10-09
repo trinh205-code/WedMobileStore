@@ -8,9 +8,12 @@ namespace WebMobileStore.Models.Entity
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ReviewsId { get; set; }
-        public int rating { get; set; }
-        public string ReviewsTitle { get; set; }
-        public string ReviewsCotent {  get; set; }
+        public int Rating { get; set; }
+
+        [Column(TypeName = "nvarchar(300)")]
+        public string? ReviewsTitle { get; set; }
+        [Column(TypeName = "nvarchar(300)")]
+        public string? ReviewsCotent {  get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public long UserId { get; set; }    

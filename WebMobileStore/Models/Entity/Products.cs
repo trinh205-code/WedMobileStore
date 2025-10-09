@@ -8,9 +8,11 @@ namespace WebMobileStore.Models.Entity
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ProductId { get; set; }
+        [Column(TypeName = "nvarchar(300)")]
         public string ProductsName { get; set; }
 
-        public string Description { get; set; }
+        [Column(TypeName = "nvarchar(300)")]
+        public string? Description { get; set; }
 
         public double Price { get; set; }
         public int Quantity { get; set; }

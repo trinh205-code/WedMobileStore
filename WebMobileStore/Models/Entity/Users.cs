@@ -12,16 +12,18 @@ namespace WebMobileStore.Models.Entity
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long UserId { get; set; }
+        [Column(TypeName = "nvarchar(300)")]
         public string FullName {  get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string Phone {  get; set; }
+        public string? Phone {  get; set; }
         public Role role { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public long CartId { get; set; }
         public Carts Carts { get; set; }
 
         public ICollection<Orders> Orders { get; set; }
+
         public long AddressId { get; set; }
         public Address Address { get; set; }
 

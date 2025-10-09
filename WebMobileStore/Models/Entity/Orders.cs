@@ -17,9 +17,13 @@ namespace WebMobileStore.Models.Entity
 
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
 
+        [Column(TypeName = "nvarchar(300)")]
         public string Address { get; set; }
+        [Column(TypeName = "nvarchar(300)")]
         public string Ward {  get; set; }
+        [Column(TypeName = "nvarchar(300)")]
         public string District { get; set; }
+        [Column(TypeName = "nvarchar(300)")]
         public string City { get; set; }
 
         public DateTime OrderdAt { get; set; } = DateTime.Now;

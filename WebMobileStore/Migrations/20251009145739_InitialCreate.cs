@@ -17,8 +17,8 @@ namespace WebMobileStore.Migrations
                 {
                     CategoryGroupId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryGroupName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryGroupName = table.Column<string>(type: "nvarchar(300)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(400)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -32,10 +32,10 @@ namespace WebMobileStore.Migrations
                 {
                     UserId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(300)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     role = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CartId = table.Column<long>(type: "bigint", nullable: false),
@@ -52,7 +52,7 @@ namespace WebMobileStore.Migrations
                 {
                     CategoryId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryName = table.Column<string>(type: "nvarchar(300)", nullable: false),
                     CategoryGroupId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -72,9 +72,9 @@ namespace WebMobileStore.Migrations
                 {
                     AddressId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ward = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ward = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    District = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -118,10 +118,10 @@ namespace WebMobileStore.Migrations
                     ShippingFee = table.Column<double>(type: "float", nullable: false),
                     PaymentStatus = table.Column<int>(type: "int", nullable: false),
                     OrderStatus = table.Column<int>(type: "int", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Ward = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(300)", nullable: false),
+                    Ward = table.Column<string>(type: "nvarchar(300)", nullable: false),
+                    District = table.Column<string>(type: "nvarchar(300)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(300)", nullable: false),
                     OrderdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     PaymentId = table.Column<long>(type: "bigint", nullable: false)
@@ -143,8 +143,8 @@ namespace WebMobileStore.Migrations
                 {
                     ProductId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductsName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductsName = table.Column<string>(type: "nvarchar(300)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", nullable: true),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
@@ -217,7 +217,7 @@ namespace WebMobileStore.Migrations
                 {
                     OrderDetailId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(200)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<double>(type: "float", nullable: false),
                     TotalPrice = table.Column<double>(type: "float", nullable: false),
@@ -267,9 +267,9 @@ namespace WebMobileStore.Migrations
                 {
                     ReviewsId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    rating = table.Column<int>(type: "int", nullable: false),
-                    ReviewsTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReviewsCotent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    ReviewsTitle = table.Column<string>(type: "nvarchar(300)", nullable: true),
+                    ReviewsCotent = table.Column<string>(type: "nvarchar(300)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
