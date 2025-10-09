@@ -1,7 +1,12 @@
-﻿namespace WebMobileStore.Models.Entity
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebMobileStore.Models.Entity
 {
     public class OrderDetail
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long OrderDetailId { get; set; }
         public string ProductName { get; set; }
         public int Quantity { get; set;}

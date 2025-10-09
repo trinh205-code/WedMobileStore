@@ -1,8 +1,13 @@
-﻿namespace WebMobileStore.Models.Entity
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebMobileStore.Models.Entity
 {
     public class Products
     {
-        public long ProductsId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductId { get; set; }
         public string ProductsName { get; set; }
 
         public string Description { get; set; }
@@ -21,5 +26,6 @@
         public ICollection<ProductImage> ProductImages { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
+        public ICollection<Reviews> Reviews { get; set; }
     }
 }

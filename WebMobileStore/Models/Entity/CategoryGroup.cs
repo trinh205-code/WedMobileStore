@@ -1,4 +1,7 @@
-﻿namespace WebMobileStore.Models.Entity
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebMobileStore.Models.Entity
 {
     public class CategoryGroup
     {
@@ -6,6 +9,8 @@
         public CategoryGroup() {
             Categories = new List<Categories>();
         }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long CategoryGroupId { get; set; }
         public string CategoryGroupName { get; set; }
         public string Description { get; set; }

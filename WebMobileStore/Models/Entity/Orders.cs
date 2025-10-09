@@ -1,9 +1,13 @@
-﻿using WebMobileStore.Models.Entity.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using WebMobileStore.Models.Entity.Enums;
 
 namespace WebMobileStore.Models.Entity
 {
     public class Orders
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long OrdersId { get; set; }
         public double TotalAmount { get; set; }
         public double DiscountAmount { get; set; }
@@ -28,6 +32,8 @@ namespace WebMobileStore.Models.Entity
         public Payment Payment { get; set; }    
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
+
+        public ICollection<Reviews> reviews { get; set; }
 
     }
 }
