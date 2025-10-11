@@ -1,0 +1,39 @@
+﻿@using WebMobileStore.Models.Entity
+@model IEnumerable<CategoryGroup>
+
+<div class="ms-2 mx-2">
+    <h1>Danh sách nhóm danh mục</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Mã nhóm</th>
+                <th>Tên nhóm</th>
+                <th>Danh sách danh mục con</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Model)
+            {
+                <tr>
+                    <td>@group.CategoryGroupId</td>
+                    <td>@group.CategoryGroupName</td>
+                    <td>
+                        @if (group.Categories != null && group.Categories.Any())
+                        {
+                            <ul>
+                                @foreach (var cat in group.Categories)
+                                {
+                                    <li>@cat.CategoryName</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <em>Không có danh mục</em>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

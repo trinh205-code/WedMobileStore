@@ -16,7 +16,7 @@ namespace WebMobileStore.Models.Entity
         public string CategoryGroupName { get; set; }
         [Column(TypeName = "nvarchar(400)")]
         public string? Description { get; set; }
-        public String Image {  get; set; }
+        public string? Image {  get; set; }
 
         public ICollection<Categories> Categories { get; set; }
 

@@ -13,8 +13,8 @@ namespace WebMobileStore.Models.Entity
             [Column(TypeName = "nvarchar(300)")]
 
             public string CategoryName { get; set; }
-            public long CategoryGroupId { get; set; }
 
+            public long CategoryGroupId { get; set; }
             public CategoryGroup CategoryGroup { get; set; }
 
             public ICollection<Products> Products { get; set; }
