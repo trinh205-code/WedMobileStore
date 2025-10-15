@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Cài đặt hệ thống";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content">
+    <h2 class="page-title">Cài đặt hệ thống</h2>
+
+    <div class="form-card">
+        <form method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="settings-section">
+                <h3>Thông tin cửa hàng</h3>
+
+                <div class="form-group">
+                    <label class="form-label">Tên cửa hàng *</label>
+                    <input type="text" class="form-input" value="Mobile Store" name="StoreName" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email liên hệ</label>
+                    <input type="email" class="form-input" value="contact@mobilestore.vn" name="Email" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="tel" class="form-input" value="1900 xxxx" name="Phone" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Địa chỉ</label>
+                    <textarea class="form-textarea" name="Address">123 Đường ABC, Quận 1, TP.HCM</textarea>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Cài đặt thanh toán</h3>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" checked /> Thanh toán khi nhận hàng (COD)
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" checked /> Chuyển khoản ngân hàng
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" /> VNPay
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" /> MoMo
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Cài đặt vận chuyển</h3>
+
+                <div class="form-group">
+                    <label class="form-label">Phí vận chuyển mặc định</label>
+                    <input type="number" class="form-input" value="30000" name="ShippingFee" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Miễn phí vận chuyển từ (VNĐ)</label>
+                    <input type="number" class="form-input" value="500000" name="FreeShippingFrom" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="submit-btn">💾 Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>

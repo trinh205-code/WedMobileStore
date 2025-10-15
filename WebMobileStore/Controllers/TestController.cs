@@ -7,22 +7,22 @@ namespace WebMobileStore.Controllers
     [Route("/cate")]
     public class TestController : Controller
     {
-        private MobileStoreContext db;
+        private readonly MobileStoreContext db;
 
-        public TestController(MobileStoreContext context) {
+        public TestController(MobileStoreContext context)
+        {
             db = context;
         }
 
         [Route("list")]
         public IActionResult Index()
         {
-            //var categoryGroup = db.CategoryGroups.ToList();
+            // Lấy danh sách Category và include các Brand liên quan
+            var categories = db.Categories
+                .Include(c => c.Brands)
+                .ToList();
 
-                var categoryGroups = db.CategoryGroups
-                    .Include(cg => cg.Categories) 
-                    .ToList();
-
-                return View(categoryGroups);
+            return View(categories);
         }
     }
 }

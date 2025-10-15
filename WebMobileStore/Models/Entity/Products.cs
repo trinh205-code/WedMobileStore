@@ -11,7 +11,7 @@ namespace WebMobileStore.Models.Entity
         [Column(TypeName = "nvarchar(300)")]
         public string ProductsName { get; set; }
 
-        [Column(TypeName = "nvarchar(300)")]
+        [Column(TypeName = "nvarchar(3000)")]
         public string? Description { get; set; }
 
         public double Price { get; set; }
@@ -20,14 +20,12 @@ namespace WebMobileStore.Models.Entity
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public long CategoriesId { get; set; }
-        public Categories Categories { get; set; }
+        public long BrandId { get; set; }
+        public Brand Brand { get; set; }
 
-        public ICollection<CartItem> CartItems { get; set; }
 
         public ICollection<ProductImage> ProductImages { get; set; }
-
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+        public ICollection<ProductVariant> ProductVariants { get; set; }
         public ICollection<Reviews> Reviews { get; set; }
     }
 }

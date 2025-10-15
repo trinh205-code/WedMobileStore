@@ -1,0 +1,52 @@
+﻿@model IEnumerable<WebMobileStore.Models.Entity.Categories>
+
+@{
+    ViewBag.Title = "Quản lý danh mục";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content">
+    <div class="page-header">
+        <h2 class="page-title">Quản lý danh mục</h2>
+        <button class="btn-primary" onclick="showAddCategoryModal()">
+            <span>➕</span> Thêm danh mục
+        </button>
+    </div>
+
+    <div class="table-card">
+        @if (Model != null && Model.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên danh mục</th>
+                        <th>Số thương hiệu</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>@category.CategoryId</td>
+                            <td>@(category.CategoryName ?? "N/A")</td>
+                            <td>@(category.Brands?.Count() ?? 0)</td>
+                            <td>
+                                <button class="action-btn edit" onclick="editCategory(@category.CategoryId)">Sửa</button>
+                                <button class="action-btn delete" onclick="deleteCategory(@category.CategoryId)">Xóa</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>📂 Chưa có danh mục nào</p>
+                <button class="btn-primary" onclick="showAddCategoryModal()">Thêm danh mục đầu tiên</button>
+            </div>
+        }
+    </div>
+</div>

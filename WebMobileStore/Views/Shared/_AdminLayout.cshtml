@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin Dashboard</title>
+    <link rel="stylesheet" href="~/css/ad.css" />
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">🔷 MOBILE STORE</div>
+        </div>
+
+        <div class="menu-section">
+            <a asp-controller="Admin" asp-action="Dashboard" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">QUẢN LÝ SẢN PHẨM</div>
+            <a asp-controller="Admin" asp-action="Products" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Products" ? "active" : "")">
+                <span>📱</span>
+                <span>Danh sách sản phẩm</span>
+            </a>
+            <a asp-controller="Admin" asp-action="AddProduct" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "AddProduct" ? "active" : "")">
+                <span>➕</span>
+                <span>Thêm sản phẩm</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Categories" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Categories" ? "active" : "")">
+                <span>📂</span>
+                <span>Danh mục</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">BÁN HÀNG</div>
+            <a asp-controller="Admin" asp-action="Orders" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Orders" ? "active" : "")">
+                <span>🛒</span>
+                <span>Đơn hàng</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Customers" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Customers" ? "active" : "")">
+                <span>👥</span>
+                <span>Khách hàng</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">HỆ THỐNG</div>
+            <a asp-controller="Admin" asp-action="Settings" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Settings" ? "active" : "")">
+                <span>⚙️</span>
+                <span>Cài đặt</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="header-left">
+                <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+                <div class="breadcrumb">
+                    <a asp-controller="Admin" asp-action="Dashboard">Home</a>
+                    <span>/</span>
+                    <span>@ViewBag.Title</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-icon">🔔</div>
+                <div class="header-icon">✉️</div>
+                <div class="user-avatar">AD</div>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                ✅ @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                ❌ @TempData["Error"]
+            </div>
+        }
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                ❌ @ViewBag.Error
+            </div>
+        }
+
+        <!-- Page Content -->
+        <div class="page-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/ad.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

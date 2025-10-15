@@ -3,47 +3,117 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebMobileStore</title>
+    <title> WebMobileStore</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ad.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebMobileStore.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebMobileStore</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+     
+    
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">🔷 MOBILE STORE</div>
+            </div>
+
+            <div class="menu-section">
+                <a asp-controller="Admin" asp-action="Dashboard" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")">
+                    <span>📊</span>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Quản lý sản phẩm</div>
+                <a asp-controller="Admin" asp-action="Products" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Products" ? "active" : "")">
+                    <span>📱</span>
+                    <span>Danh sách sản phẩm</span>
+                </a>
+                <a asp-controller="Admin" asp-action="AddProduct" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "AddProduct" ? "active" : "")">
+                    <span>➕</span>
+                    <span>Thêm sản phẩm</span>
+                </a>
+                <a asp-controller="Admin" asp-action="Categories" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Categories" ? "active" : "")">
+                    <span>📂</span>
+                    <span>Danh mục</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Bán hàng</div>
+                <a asp-controller="Admin" asp-action="Orders" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Orders" ? "active" : "")">
+                    <span>🛒</span>
+                    <span>Đơn hàng</span>
+                    @if (ViewBag.TotalOrders != null && ViewBag.TotalOrders > 0)
+                    {
+                        <span class="badge">@ViewBag.TotalOrders</span>
+                    }
+                </a>
+                <a asp-controller="Admin" asp-action="Customers" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Customers" ? "active" : "")">
+                    <span>👥</span>
+                    <span>Khách hàng</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Hệ thống</div>
+                <a asp-controller="Admin" asp-action="Settings" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Settings" ? "active" : "")">
+                    <span>⚙️</span>
+                    <span>Cài đặt</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-container">
+            <!-- Header -->
+            <div class="admin-header">
+                <div class="header-left">
+                    <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+                    <div class="breadcrumb">
+                        <a asp-controller="Admin" asp-action="Dashboard">Home</a>
+                        <span>/</span>
+                        <span>@ViewBag.Title</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="header-icon">🔔</div>
+                    <div class="header-icon">✉️</div>
+                    <div class="user-avatar">AD</div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - WebMobileStore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <!-- Alert Messages -->
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    ✅ @TempData["Success"]
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    ❌ @TempData["Error"]
+                </div>
+            }
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">
+                    ❌ @ViewBag.Error
+                </div>
+            }
+
+            <!-- Page Content -->
+            <div class="page-wrapper">
+                @RenderBody()
+            </div>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/js/ad.js"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+    </body>
 </html>

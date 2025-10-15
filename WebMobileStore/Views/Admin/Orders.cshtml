@@ -1,0 +1,51 @@
+﻿@model IEnumerable<WebMobileStore.Models.Entity.Orders>
+
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content">
+    <h2 class="page-title">Quản lý đơn hàng</h2>
+
+    <div class="table-card">
+        @if (Model != null && Model.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày đặt</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>#ORD-@order.OrdersId</td>
+                            <td>@(order.User?.FullName ?? "N/A")</td>
+                            <td>@order.TotalAmount.ToString("N0")₫</td>
+                            <td>
+                                <span class="status-badge success">@order.OrderStatus</span>
+                            </td>
+                            <td>@order.OrderdAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <button class="action-btn">Chi tiết</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>🛒 Chưa có đơn hàng nào</p>
+            </div>
+        }
+    </div>
+</div>

@@ -12,8 +12,8 @@ using WebMobileStore.Models.Data;
 namespace WebMobileStore.Migrations
 {
     [DbContext(typeof(MobileStoreContext))]
-    [Migration("20251011072502_UpdateSeedCategory")]
-    partial class UpdateSeedCategory
+    [Migration("20251014084412_UpdateDatabase")]
+    partial class UpdateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,7 +46,7 @@ namespace WebMobileStore.Migrations
 
                     b.Property<string>("Ward")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("AddressId");
 
@@ -54,6 +54,34 @@ namespace WebMobileStore.Migrations
                         .IsUnique();
 
                     b.ToTable("Addresses", (string)null);
+                });
+
+            modelBuilder.Entity("WebMobileStore.Models.Entity.Brand", b =>
+                {
+                    b.Property<long>("BrandId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("BrandId"));
+
+                    b.Property<string>("BrandName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BrandId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("WebMobileStore.Models.Entity.CartItem", b =>
@@ -70,7 +98,7 @@ namespace WebMobileStore.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<long>("ProductsId")
+                    b.Property<long>("ProductVariantId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Quantity")
@@ -80,7 +108,7 @@ namespace WebMobileStore.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("ProductsId");
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("CartItems", (string)null);
                 });
@@ -112,41 +140,13 @@ namespace WebMobileStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CategoryId"));
 
-                    b.Property<long>("CategoryGroupId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(300)");
 
                     b.HasKey("CategoryId");
 
-                    b.HasIndex("CategoryGroupId");
-
                     b.ToTable("Categories", (string)null);
-                });
-
-            modelBuilder.Entity("WebMobileStore.Models.Entity.CategoryGroup", b =>
-                {
-                    b.Property<long>("CategoryGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CategoryGroupId"));
-
-                    b.Property<string>("CategoryGroupName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(400)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CategoryGroupId");
-
-                    b.ToTable("CategoryGroups", (string)null);
                 });
 
             modelBuilder.Entity("WebMobileStore.Models.Entity.OrderDetail", b =>
@@ -157,18 +157,26 @@ namespace WebMobileStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderDetailId"));
 
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("ProductId")
+                    b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<long>("ProductVariantId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Storage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TotalPrice")
                         .HasColumnType("float");
@@ -180,7 +188,7 @@ namespace WebMobileStore.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("OrderDetails", (string)null);
                 });
@@ -293,6 +301,47 @@ namespace WebMobileStore.Migrations
                     b.ToTable("ProductImages", (string)null);
                 });
 
+            modelBuilder.Entity("WebMobileStore.Models.Entity.ProductVariant", b =>
+                {
+                    b.Property<long>("ProductVariantId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ProductVariantId"));
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<double>("CompareAtPrice")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Storage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProductVariantId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductVariants", (string)null);
+                });
+
             modelBuilder.Entity("WebMobileStore.Models.Entity.Products", b =>
                 {
                     b.Property<long>("ProductId")
@@ -301,14 +350,14 @@ namespace WebMobileStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ProductId"));
 
-                    b.Property<long>("CategoriesId")
+                    b.Property<long>("BrandId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(300)");
+                        .HasColumnType("nvarchar(3000)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -325,7 +374,7 @@ namespace WebMobileStore.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("CategoriesId");
+                    b.HasIndex("BrandId");
 
                     b.ToTable("Products", (string)null);
                 });
@@ -421,6 +470,17 @@ namespace WebMobileStore.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("WebMobileStore.Models.Entity.Brand", b =>
+                {
+                    b.HasOne("WebMobileStore.Models.Entity.Categories", "Category")
+                        .WithMany("Brands")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("WebMobileStore.Models.Entity.CartItem", b =>
                 {
                     b.HasOne("WebMobileStore.Models.Entity.Carts", "Carts")
@@ -429,15 +489,15 @@ namespace WebMobileStore.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebMobileStore.Models.Entity.Products", "Products")
+                    b.HasOne("WebMobileStore.Models.Entity.ProductVariant", "ProductVariant")
                         .WithMany("CartItems")
-                        .HasForeignKey("ProductsId")
+                        .HasForeignKey("ProductVariantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Carts");
 
-                    b.Navigation("Products");
+                    b.Navigation("ProductVariant");
                 });
 
             modelBuilder.Entity("WebMobileStore.Models.Entity.Carts", b =>
@@ -451,17 +511,6 @@ namespace WebMobileStore.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebMobileStore.Models.Entity.Categories", b =>
-                {
-                    b.HasOne("WebMobileStore.Models.Entity.CategoryGroup", "CategoryGroup")
-                        .WithMany("Categories")
-                        .HasForeignKey("CategoryGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CategoryGroup");
-                });
-
             modelBuilder.Entity("WebMobileStore.Models.Entity.OrderDetail", b =>
                 {
                     b.HasOne("WebMobileStore.Models.Entity.Orders", "Orders")
@@ -470,15 +519,15 @@ namespace WebMobileStore.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebMobileStore.Models.Entity.Products", "Products")
+                    b.HasOne("WebMobileStore.Models.Entity.ProductVariant", "ProductVariant")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductVariantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Orders");
 
-                    b.Navigation("Products");
+                    b.Navigation("ProductVariant");
                 });
 
             modelBuilder.Entity("WebMobileStore.Models.Entity.Orders", b =>
@@ -514,15 +563,26 @@ namespace WebMobileStore.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("WebMobileStore.Models.Entity.Products", b =>
+            modelBuilder.Entity("WebMobileStore.Models.Entity.ProductVariant", b =>
                 {
-                    b.HasOne("WebMobileStore.Models.Entity.Categories", "Categories")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoriesId")
+                    b.HasOne("WebMobileStore.Models.Entity.Products", "Products")
+                        .WithMany("ProductVariants")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Categories");
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("WebMobileStore.Models.Entity.Products", b =>
+                {
+                    b.HasOne("WebMobileStore.Models.Entity.Brand", "Brand")
+                        .WithMany("Products")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
                 });
 
             modelBuilder.Entity("WebMobileStore.Models.Entity.Reviews", b =>
@@ -552,6 +612,11 @@ namespace WebMobileStore.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("WebMobileStore.Models.Entity.Brand", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("WebMobileStore.Models.Entity.Carts", b =>
                 {
                     b.Navigation("Items");
@@ -559,12 +624,7 @@ namespace WebMobileStore.Migrations
 
             modelBuilder.Entity("WebMobileStore.Models.Entity.Categories", b =>
                 {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("WebMobileStore.Models.Entity.CategoryGroup", b =>
-                {
-                    b.Navigation("Categories");
+                    b.Navigation("Brands");
                 });
 
             modelBuilder.Entity("WebMobileStore.Models.Entity.Orders", b =>
@@ -577,13 +637,18 @@ namespace WebMobileStore.Migrations
                     b.Navigation("reviews");
                 });
 
-            modelBuilder.Entity("WebMobileStore.Models.Entity.Products", b =>
+            modelBuilder.Entity("WebMobileStore.Models.Entity.ProductVariant", b =>
                 {
                     b.Navigation("CartItems");
 
                     b.Navigation("OrderDetails");
+                });
 
+            modelBuilder.Entity("WebMobileStore.Models.Entity.Products", b =>
+                {
                     b.Navigation("ProductImages");
+
+                    b.Navigation("ProductVariants");
 
                     b.Navigation("Reviews");
                 });

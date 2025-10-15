@@ -1,0 +1,62 @@
+﻿@model IEnumerable<WebMobileStore.Models.Entity.Users>
+
+@{
+    ViewBag.Title = "Quản lý khách hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content">
+    <h2 class="page-title">Quản lý khách hàng</h2>
+
+    <div class="table-card">
+        @if (Model != null && Model.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Email</th>
+                        <th>Số ĐT</th>
+                        <th>Địa chỉ</th>
+                        <th>Tổng đơn</th>
+                        <th>Ngày tham gia</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.UserId</td>
+                            <td>@(user.FullName ?? "N/A")</td>
+                            <td>@(user.Email ?? "N/A")</td>
+                            <td>@(user.Phone ?? "N/A")</td>
+                            <td>
+                                @if (user.Address != null)
+                                {
+                                    @($"{user.Address.Ward}, {user.Address.District}, {user.Address.City}")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa có</span>
+                                }
+                            </td>
+                            <td>@(user.Orders?.Count() ?? 0)</td>
+                            <td>@user.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <button class="action-btn">Chi tiết</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>👥 Chưa có khách hàng nào</p>
+            </div>
+        }
+    </div>
+</div>

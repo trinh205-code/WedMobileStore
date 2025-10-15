@@ -1,0 +1,70 @@
+﻿@model IEnumerable<WebMobileStore.Models.Entity.Products>
+
+@{
+    ViewBag.Title = "Quản lý sản phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content">
+    <div class="page-header">
+        <h2 class="page-title">Quản lý sản phẩm</h2>
+        <a asp-controller="Admin" asp-action="AddProduct" class="btn-primary">
+            <span>➕</span> Thêm sản phẩm
+        </a>
+    </div>
+
+    <div class="table-card">
+        @if (Model != null && Model.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Thương hiệu</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td>@product.ProductId</td>
+                            <td>@(product.ProductsName ?? "N/A")</td>
+                            <td>@(product.Brand?.BrandName ?? "N/A")</td>
+                            <td>@product.Price.ToString("N0")₫</td>
+                            <td>@product.Quantity</td>
+                            <td>
+                                @if (product.IsActive)
+                                {
+                                    <span class="status-badge success">Hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge danger">Ngừng bán</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-controller="Admin" asp-action="EditProduct" asp-route-id="@product.ProductId" class="action-btn edit">Sửa</a>
+                                <form asp-controller="Admin" asp-action="DeleteProduct" asp-route-id="@product.ProductId" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="action-btn delete">Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>📦 Chưa có sản phẩm nào</p>
+                <a asp-controller="Admin" asp-action="AddProduct" class="btn-primary">Thêm sản phẩm đầu tiên</a>
+            </div>
+        }
+    </div>
+</div>

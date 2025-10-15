@@ -15,56 +15,56 @@ public static class DbInitializer
             // Tạo DB nếu chưa có
             context.Database.Migrate();
 
-            // Nếu bảng CategoryGroup đã có dữ liệu thì không seed lại
-            if (context.CategoryGroups.Any())
+            // Nếu đã có dữ liệu thì không seed nữa
+            if (context.Categories.Any())
             {
                 return;
             }
 
-            // === Seed CategoryGroup ===
-            var categoryGroups = new CategoryGroup[]
-            {
-                new CategoryGroup { CategoryGroupName = "Điện thoại" },
-                new CategoryGroup { CategoryGroupName = "Laptop" },
-                new CategoryGroup { CategoryGroupName = "Tai nghe" },
-                new CategoryGroup { CategoryGroupName = "Camera" },
-                new CategoryGroup { CategoryGroupName = "Chuột" }
-            };
-            context.CategoryGroups.AddRange(categoryGroups);
-            context.SaveChanges();
-
+            // === Seed CATEGORIES (Cha) ===
             var categories = new Categories[]
             {
-                // Điện thoại
-                new Categories { CategoryName = "Apple", CategoryGroupId = categoryGroups[0].CategoryGroupId },
-                new Categories { CategoryName = "Samsung", CategoryGroupId = categoryGroups[0].CategoryGroupId },
-                new Categories { CategoryName = "Xiaomi", CategoryGroupId = categoryGroups[0].CategoryGroupId },
-                new Categories { CategoryName = "Oppo", CategoryGroupId = categoryGroups[0].CategoryGroupId },
-                new Categories { CategoryName = "Huawei", CategoryGroupId = categoryGroups[0].CategoryGroupId },
-                new Categories { CategoryName = "Vivo", CategoryGroupId = categoryGroups[0].CategoryGroupId },
-
-                // Laptop
-                new Categories { CategoryName = "Dell", CategoryGroupId = categoryGroups[1].CategoryGroupId },
-                new Categories { CategoryName = "MacBook", CategoryGroupId = categoryGroups[1].CategoryGroupId },
-                new Categories { CategoryName = "HP", CategoryGroupId = categoryGroups[1].CategoryGroupId },
-                new Categories { CategoryName = "Asus", CategoryGroupId = categoryGroups[1].CategoryGroupId },
-
-                // Tai nghe
-                new Categories { CategoryName = "Sony", CategoryGroupId = categoryGroups[2].CategoryGroupId },
-                new Categories { CategoryName = "Samsung", CategoryGroupId = categoryGroups[2].CategoryGroupId },
-                new Categories { CategoryName = "AirPods", CategoryGroupId = categoryGroups[2].CategoryGroupId },
-
-                // Camera
-                new Categories { CategoryName = "Ezviz", CategoryGroupId = categoryGroups[3].CategoryGroupId },
-                new Categories { CategoryName = "TP-Link", CategoryGroupId = categoryGroups[3].CategoryGroupId },
-                new Categories { CategoryName = "Imou", CategoryGroupId = categoryGroups[3].CategoryGroupId },
-
-                // Chuột
-                new Categories { CategoryName = "Logitech", CategoryGroupId = categoryGroups[4].CategoryGroupId },
-                new Categories { CategoryName = "Genius", CategoryGroupId = categoryGroups[4].CategoryGroupId },
-                new Categories { CategoryName = "Asus", CategoryGroupId = categoryGroups[4].CategoryGroupId }
+                new Categories { CategoryName = "Điện thoại" },
+                new Categories { CategoryName = "Laptop" },
+                new Categories { CategoryName = "Tai nghe" },
+                new Categories { CategoryName = "Camera" },
+                new Categories { CategoryName = "Chuột" }
             };
             context.Categories.AddRange(categories);
+            context.SaveChanges();
+
+            var brands = new Brand[]
+            {
+                // Điện thoại
+                new Brand { BrandName = "Apple",Image = "https://tse1.mm.bing.net/th/id/OIP.ULnBI0tcYY36IICea970DwHaJG?pid=Api&P=0&h=180" , CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Samsung",Image = "", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Xiaomi",Image = "", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Oppo",Image = "", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Huawei",Image = "", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Vivo",Image = "", CategoryId = categories[0].CategoryId },
+
+                // Laptop
+                new Brand { BrandName = "Dell",Image = "", CategoryId = categories[1].CategoryId },
+                new Brand { BrandName = "MacBook",Image = "", CategoryId = categories[1].CategoryId },
+                new Brand { BrandName = "HP",Image = "", CategoryId = categories[1].CategoryId },
+                new Brand { BrandName = "Asus",Image = "", CategoryId = categories[1].CategoryId },
+
+                // Tai nghe
+                new Brand { BrandName = "Sony",Image = "", CategoryId = categories[2].CategoryId },
+                new Brand { BrandName = "Samsung",Image = "", CategoryId = categories[2].CategoryId },
+                new Brand { BrandName = "AirPods",Image = "", CategoryId = categories[2].CategoryId },
+
+                // Camera
+                new Brand { BrandName = "Ezviz",Image = "", CategoryId = categories[3].CategoryId },
+                new Brand { BrandName = "TP-Link",Image = "", CategoryId = categories[3].CategoryId },
+                new Brand { BrandName = "Imou",Image = "", CategoryId = categories[3].CategoryId },
+
+                // Chuột
+                new Brand { BrandName = "Logitech",Image = "", CategoryId = categories[4].CategoryId },
+                new Brand { BrandName = "Genius",Image = "", CategoryId = categories[4].CategoryId },
+                new Brand { BrandName = "Asus",Image = "", CategoryId = categories[4].CategoryId }
+            };
+            context.Brands.AddRange(brands);
             context.SaveChanges();
         }
     }

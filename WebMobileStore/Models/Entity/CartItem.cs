@@ -15,8 +15,8 @@ namespace WebMobileStore.Models.Entity
         public Carts Carts { get; set; }
 
 
-        public long ProductsId { get; set; }
-        public Products Products { get; set; }
+        public long ProductVariantId { get; set; }
+        public ProductVariant ProductVariant { get; set; }
 
     }
 }

@@ -8,7 +8,7 @@ namespace WebMobileStore.Models.Entity
         [Key]  
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long AddressId { get; set; }
-        [Column(TypeName = "nvarchar(100)")]
+        [Column(TypeName = "nvarchar(200)")]
         public string Ward {  get; set; }
         [Column(TypeName = "nvarchar(100)")]
         public string District { get; set; }

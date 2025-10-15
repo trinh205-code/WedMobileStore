@@ -357,3 +357,82 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Admin Dashboard initialized successfully!');
 });
+
+
+function addVariant() {
+    const container = document.getElementById('variantsContainer');
+    const index = container.children.length;
+    const div = document.createElement('div');
+    div.className = 'variant-row';
+    div.innerHTML = `
+        <input type="text" name="variants[${index}].color" placeholder="Màu sắc" class="form-input" required>
+        <input type="text" name="variants[${index}].capacity" placeholder="Dung lượng (VD: 128GB)" class="form-input" required>
+        <input type="number" name="variants[${index}].price" placeholder="Giá bán" class="form-input" required>
+        <input type="number" name="variants[${index}].stock" placeholder="Số lượng" class="form-input" required>
+        <button type="button" class="remove-variant-btn" onclick="this.parentElement.remove()">❌</button>
+    `;
+    container.appendChild(div);
+}
+
+function loadPage(pageName) {
+    if (pageName === "Index") return; // ngăn vòng lặp
+
+    $.ajax({
+        url: '/Admin/' + pageName,
+        type: 'GET',
+        success: function (data) {
+            $('#mainContent').html(data);
+        },
+        error: function () {
+            alert('Không thể tải trang!');
+        }
+    });
+}
+
+// Toggle Sidebar
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('collapsed');
+}
+
+// Auto hide alerts after 5 seconds
+document.addEventListener('DOMContentLoaded', function () {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                alert.remove();
+            }, 300);
+        }, 5000);
+    });
+});
+
+// Mobile sidebar toggle
+if (window.innerWidth <= 768) {
+    document.querySelector('.menu-toggle').addEventListener('click', function () {
+        document.getElementById('sidebar').classList.toggle('active');
+    });
+}
+
+
+//function loadPage(pageName) {
+//    // Xóa active class khỏi tất cả menu items
+//    $('.menu-item').removeClass('active');
+
+//    // Thêm active class cho menu được click
+//    event.currentTarget.classList.add('active');
+
+//    // Load PartialView bằng AJAX
+//    $.ajax({
+//        url: '/Admin/' + pageName,
+//        type: 'GET',
+//        success: function (data) {
+//            $('#mainContent').html(data);
+//        },
+//        error: function () {
+//            alert('Không thể tải trang!');
+//        }
+//    });
+//}

@@ -1,35 +1,35 @@
 ﻿@using WebMobileStore.Models.Entity
-@model IEnumerable<CategoryGroup>
+@model IEnumerable<Categories>
 
 <div class="ms-2 mx-2">
-    <h1>Danh sách nhóm danh mục</h1>
+    <h1>Danh sách danh mục & thương hiệu</h1>
     <table class="table table-bordered">
-        <thead>
+        <thead class="table-dark">
             <tr>
-                <th>Mã nhóm</th>
-                <th>Tên nhóm</th>
-                <th>Danh sách danh mục con</th>
+                <th>Mã danh mục</th>
+                <th>Tên danh mục</th>
+                <th>Thương hiệu liên quan</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var group in Model)
+            @foreach (var cate in Model)
             {
                 <tr>
-                    <td>@group.CategoryGroupId</td>
-                    <td>@group.CategoryGroupName</td>
+                    <td>@cate.CategoryId</td>
+                    <td>@cate.CategoryName</td>
                     <td>
-                        @if (group.Categories != null && group.Categories.Any())
+                        @if (cate.Brands != null && cate.Brands.Any())
                         {
                             <ul>
-                                @foreach (var cat in group.Categories)
+                                @foreach (var brand in cate.Brands)
                                 {
-                                    <li>@cat.CategoryName</li>
+                                    <li>@brand.BrandName</li>
                                 }
                             </ul>
                         }
                         else
                         {
-                            <em>Không có danh mục</em>
+                            <em>Không có thương hiệu</em>
                         }
                     </td>
                 </tr>
