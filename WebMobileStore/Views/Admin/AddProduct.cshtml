@@ -15,17 +15,29 @@
             <div class="form-row">
                 <div class="form-group">
                     <label asp-for="ProductsName" class="form-label">Tên sản phẩm *</label>
-                    <input asp-for="ProductsName" class="form-input" placeholder="VD: iPhone 15 Pro Max 256GB" />
+                    <input asp-for="ProductsName" class="form-input" placeholder="VD: iPhone 15 Pro Max " />
                     <span asp-validation-for="ProductsName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="BrandId" class="form-label">Danh mục *</label>
-                    <select asp-for="BrandId" class="form-select">
+                    <label asp-for="CategoryId" class="form-label">Danh mục *</label>
+                    <select asp-for="CategoryId" class="form-select">
                         <option value="">Chọn danh mục</option>
                         @foreach (var cat in ViewBag.Categories)
                         {
                             <option value="@cat.CategoryId">@cat.CategoryName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BrandId" class="form-label">Hãng *</label>
+                    <select asp-for="BrandId" class="form-select">
+                        <option value="">Chọn hãng</option>
+                        @foreach (var brand in ViewBag.Brands)
+                        {
+                            <option value="@brand.BrandId">@brand.BrandName</option>
                         }
                     </select>
                     <span asp-validation-for="BrandId" class="text-danger"></span>
@@ -45,6 +57,8 @@
                     <span asp-validation-for="Quantity" class="text-danger"></span>
                 </div>
             </div>
+
+            
 
             <div class="form-group">
                 <label asp-for="Description" class="form-label">Mô tả sản phẩm</label>

@@ -12,8 +12,8 @@ using WebMobileStore.Models.Data;
 namespace WebMobileStore.Migrations
 {
     [DbContext(typeof(MobileStoreContext))]
-    [Migration("20251014084412_UpdateDatabase")]
-    partial class UpdateDatabase
+    [Migration("20251016150621_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -353,6 +353,9 @@ namespace WebMobileStore.Migrations
                     b.Property<long>("BrandId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -375,6 +378,8 @@ namespace WebMobileStore.Migrations
                     b.HasKey("ProductId");
 
                     b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products", (string)null);
                 });
@@ -582,7 +587,15 @@ namespace WebMobileStore.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("WebMobileStore.Models.Entity.Categories", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Brand");
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("WebMobileStore.Models.Entity.Reviews", b =>

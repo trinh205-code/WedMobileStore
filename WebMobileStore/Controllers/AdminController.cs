@@ -8,11 +8,11 @@ namespace WebMobileStore.Controllers
     [Route("Admin")]
     public class AdminController : Controller
     {
-        private readonly MobileStoreContext _context;
+        private readonly MobileStoreContext db;
 
         public AdminController(MobileStoreContext context)
         {
-            _context = context;
+            db = context;
         }
 
         // Dashboard - Trang chủ Admin
@@ -22,10 +22,10 @@ namespace WebMobileStore.Controllers
         {
             try
             {
-                ViewBag.TotalUsers = _context.Users?.Count() ?? 0;
-                ViewBag.TotalProducts = _context.Products?.Count() ?? 0;
-                ViewBag.TotalOrders = _context.Orders?.Count() ?? 0;
-                ViewBag.TotalRevenue = _context.Orders?.Sum(o => (decimal?)o.TotalAmount) ?? 0;
+                ViewBag.TotalUsers = db.Users?.Count() ?? 0;
+                ViewBag.TotalProducts = db.Products?.Count() ?? 0;
+                ViewBag.TotalOrders = db.Orders?.Count() ?? 0;
+                ViewBag.TotalRevenue = db.Orders?.Sum(o => (decimal?)o.TotalAmount) ?? 0;
 
                 return View();
             }
@@ -45,22 +45,10 @@ namespace WebMobileStore.Controllers
         [HttpGet("Products")]
         public IActionResult Products()
         {
-            try
-            {
-                var products = _context.Products
-                    .Include(p => p.Brand)
-                    .Include(p => p.ProductImages)
-                    .Include(p => p.ProductVariants)
-                    .OrderByDescending(p => p.CreatedAt)
-                    .ToList();
+                var products = db.Products.ToList();
 
-                return View(products ?? new List<Products>());
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Không thể tải danh sách sản phẩm: " + ex.Message;
-                return View(new List<Products>());
-            }
+                return View(products);
+            
         }
 
         // AddProduct GET - Form thêm sản phẩm
@@ -69,8 +57,8 @@ namespace WebMobileStore.Controllers
         {
             try
             {
-                ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
 
                 return View();
             }
@@ -79,6 +67,7 @@ namespace WebMobileStore.Controllers
                 ViewBag.Error = "Không thể tải form thêm sản phẩm: " + ex.Message;
                 ViewBag.Categories = new List<Categories>();
                 ViewBag.Brands = new List<Brand>();
+                
 
                 return View();
             }
@@ -87,8 +76,9 @@ namespace WebMobileStore.Controllers
         // AddProduct POST - Xử lý thêm sản phẩm
         [HttpPost("AddProduct")]
         [ValidateAntiForgeryToken]
-        public IActionResult AddProduct(Products product)
+        public IActionResult AddProduct([Bind("ProductsName,CategoryId,BrandId,Price,Quantity,Description")] Products product)
         {
+
             try
             {
                 if (product == null)
@@ -103,31 +93,31 @@ namespace WebMobileStore.Controllers
                     if (string.IsNullOrWhiteSpace(product.ProductsName))
                     {
                         TempData["Error"] = "Tên sản phẩm không được để trống!";
-                        ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                        ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                        ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                        ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
                         return View(product);
                     }
 
                     if (product.Price <= 0)
                     {
                         TempData["Error"] = "Giá sản phẩm phải lớn hơn 0!";
-                        ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                        ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                        ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                        ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
                         return View(product);
                     }
 
                     // Kiểm tra category có tồn tại không
-                    var categoryExists = _context.Categories.Any(c => c.CategoryId == product.BrandId);
+                    var categoryExists = db.Categories.Any(c => c.CategoryId == product.CategoryId);
                     if (!categoryExists)
                     {
                         TempData["Error"] = "Danh mục không tồn tại!";
-                        ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                        ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                        ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                        ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
                         return View(product);
                     }
 
-                    _context.Products.Add(product);
-                    _context.SaveChanges();
+                    db.Products.Add(product);
+                    db.SaveChanges();
 
                     TempData["Success"] = "Thêm sản phẩm thành công!";
                     return RedirectToAction("Products");
@@ -139,22 +129,22 @@ namespace WebMobileStore.Controllers
                     .ToList();
 
                 TempData["Error"] = "Có lỗi xảy ra: " + string.Join(", ", errors);
-                ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
                 return View(product);
             }
             catch (DbUpdateException ex)
             {
                 TempData["Error"] = "Lỗi cơ sở dữ liệu: " + (ex.InnerException?.Message ?? ex.Message);
-                ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
                 return View(product);
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Có lỗi xảy ra: " + ex.Message;
-                ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
                 return View(product);
             }
         }
@@ -165,7 +155,7 @@ namespace WebMobileStore.Controllers
         {
             try
             {
-                var product = _context.Products.Find(id);
+                var product = db.Products.Find(id);
 
                 if (product == null)
                 {
@@ -173,8 +163,8 @@ namespace WebMobileStore.Controllers
                     return RedirectToAction("Products");
                 }
 
-                ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
 
                 return View(product);
             }
@@ -200,22 +190,22 @@ namespace WebMobileStore.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    _context.Update(product);
-                    _context.SaveChanges();
+                    db.Update(product);
+                    db.SaveChanges();
 
                     TempData["Success"] = "Cập nhật sản phẩm thành công!";
                     return RedirectToAction("Products");
                 }
 
-                ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
                 return View(product);
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Lỗi: " + ex.Message;
-                ViewBag.Categories = _context.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = _context.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
+                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
                 return View(product);
             }
         }
@@ -227,7 +217,7 @@ namespace WebMobileStore.Controllers
         {
             try
             {
-                var product = _context.Products.Find(id);
+                var product = db.Products.Find(id);
 
                 if (product == null)
                 {
@@ -236,15 +226,15 @@ namespace WebMobileStore.Controllers
                 }
 
                 // Kiểm tra sản phẩm có trong đơn hàng nào không
-                var hasOrders = _context.OrderDetails.Any(od => od.ProductVariant.ProductId == id);
+                var hasOrders = db.OrderDetails.Any(od => od.ProductVariant.ProductId == id);
                 if (hasOrders)
                 {
                     TempData["Error"] = "Không thể xóa sản phẩm đã có trong đơn hàng!";
                     return RedirectToAction("Products");
                 }
 
-                _context.Products.Remove(product);
-                _context.SaveChanges();
+                db.Products.Remove(product);
+                db.SaveChanges();
 
                 TempData["Success"] = "Xóa sản phẩm thành công!";
                 return RedirectToAction("Products");
@@ -262,7 +252,7 @@ namespace WebMobileStore.Controllers
         {
             try
             {
-                var orders = _context.Orders
+                var orders = db.Orders
                     .Include(o => o.User)
                     .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.ProductVariant)
@@ -284,7 +274,7 @@ namespace WebMobileStore.Controllers
         {
             try
             {
-                var customers = _context.Users
+                var customers = db.Users
                     .Include(u => u.Address)
                     .Include(u => u.Orders)
                     .OrderByDescending(u => u.CreatedAt)
@@ -305,7 +295,7 @@ namespace WebMobileStore.Controllers
         {
             try
             {
-                var categories = _context.Categories
+                var categories = db.Categories
                     .Include(c => c.Brands)
                     .ToList();
 
