@@ -1,142 +1,57 @@
 ﻿@{
-    // ViewData["Title"] = "Home Page";
+    ViewBag.Title = "Trang chủ";
+    Layout = "_ShopLayout";
 }
 
-<head>
+<!-- Banner -->
+<div class="banner">
+    <h1>🔥 FLASH SALE CUỐI TUẦN</h1>
+    <p>Giảm giá đến 50% - Miễn phí vận chuyển toàn quốc</p>
+</div>
 
-    <title>Tech Store - Điện Thoại, Laptop, Phụ Kiện</title>
-
-    <link rel="stylesheet" href="~/css/m.css">
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <a href="#" class="logo">🛒 TechStore</a>
-            <div class="search-box">
-                <input type="text" placeholder="Tìm kiếm điện thoại, laptop, phụ kiện...">
-                <button>Tìm</button>
-            </div>
-            <div class="header-actions">
-                <div class="cart-icon" onclick="openCart()">
-                    🛍️
-                    <span class="cart-count" id="cartCount">0</span>
-                </div>
-                <span>Đăng nhập</span>
-            </div>
+<!-- Categories -->
+<div class="section">
+    <div class="categories">
+        <div class="category-card">
+            <div class="category-icon">📱</div>
+            <div>Điện thoại</div>
         </div>
-    </header>
-
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="#phones">📱 Điện thoại</a>
-            <a href="#laptops">💻 Laptop</a>
-            <a href="#accessories">🎧 Phụ kiện</a>
-            <a href="#smartwatch">⌚ Smartwatch</a>
-            <a href="#tablet">📲 Tablet</a>
+        <div class="category-card">
+            <div class="category-icon">💻</div>
+            <div>Laptop</div>
         </div>
-    </nav>
-
-    <!-- Banner -->
-    <div class="banner">
-        <h1>🔥 FLASH SALE CUỐI TUẦN</h1>
-        <p>Giảm giá đến 50% - Miễn phí vận chuyển toàn quốc</p>
-    </div>
-
-    <!-- Categories -->
-    <div class="section">
-        <div class="categories">
-            <div class="category-card">
-                <div class="category-icon">📱</div>
-                <div>Điện thoại</div>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">💻</div>
-                <div>Laptop</div>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">🎧</div>
-                <div>Tai nghe</div>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">⌚</div>
-                <div>Smartwatch</div>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">📷</div>
-                <div>Camera</div>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">🖱️</div>
-                <div>Chuột</div>
-            </div>
+        <div class="category-card">
+            <div class="category-icon">🎧</div>
+            <div>Tai nghe</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">⌚</div>
+            <div>Smartwatch</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">📷</div>
+            <div>Camera</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">🖱️</div>
+            <div>Chuột</div>
         </div>
     </div>
+</div>
 
-    <!-- Flash Sale Section -->
-    <div class="section">
-        <div class="section-header">
-            <h2>⚡ Flash Sale</h2>
-            <div class="flash-sale-timer">Kết thúc sau: 02:45:30</div>
-        </div>
-        <div class="product-grid" id="productsContainer"></div>
+<!-- Flash Sale Section -->
+<div class="section">
+    <div class="section-header">
+        <h2>⚡ Flash Sale</h2>
+        <div class="flash-sale-timer">Kết thúc sau: 02:45:30</div>
     </div>
+    <div class="product-grid" id="productsContainer"></div>
+</div>
 
-    <!-- Recommended Section -->
-    <div class="section">
-        <div class="section-header">
-            <h2>🌟 Gợi ý cho bạn</h2>
-        </div>
-        <div class="product-grid" id="recommendedContainer"></div>
+<!-- Recommended Section -->
+<div class="section">
+    <div class="section-header">
+        <h2>🌟 Gợi ý cho bạn</h2>
     </div>
-
-    <!-- Cart Modal -->
-    <div class="modal" id="cartModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🛍️ Giỏ hàng của bạn</h2>
-                <span class="close-modal" onclick="closeCart()">&times;</span>
-            </div>
-            <div id="cartItems"></div>
-            <div class="cart-total">
-                Tổng cộng: <span id="totalPrice">0đ</span>
-            </div>
-            <button class="checkout-btn">Thanh toán</button>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>Về chúng tôi</h3>
-                <a href="#">Giới thiệu công ty</a>
-                <a href="#">Tuyển dụng</a>
-                <a href="#">Liên hệ</a>
-            </div>
-            <div class="footer-section">
-                <h3>Chính sách</h3>
-                <a href="#">Chính sách bảo hành</a>
-                <a href="#">Chính sách đổi trả</a>
-                <a href="#">Chính sách vận chuyển</a>
-            </div>
-            <div class="footer-section">
-                <h3>Hỗ trợ khách hàng</h3>
-                <a href="#">Hotline: 1900 xxxx</a>
-                <a href="#">Email: support@techstore.vn</a>
-                <a href="#">FAQ</a>
-            </div>
-            <div class="footer-section">
-                <h3>Theo dõi chúng tôi</h3>
-                <a href="#">📘 Facebook</a>
-                <a href="#">📸 Instagram</a>
-                <a href="#">📺 YouTube</a>
-            </div>
-        </div>
-    </footer>
-
-    <script src="~/js/m.js"></script>
-    // Sample product data
-
-</body>
+    <div class="product-grid" id="recommendedContainer"></div>
+</div>

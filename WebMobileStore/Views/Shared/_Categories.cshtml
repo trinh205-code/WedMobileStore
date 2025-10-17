@@ -1,0 +1,75 @@
+﻿@model IEnumerable<WebMobileStore.Models.Entity.Categories>
+
+<div class="section">
+    <div class="categories">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var category in Model)
+            {
+                <a asp-controller="Shop" asp-action="Category" asp-route-id="@category.CategoryId" class="category-card">
+                    <div class="category-icon">
+                        @switch (category.CategoryName.ToLower())
+                        {
+                            case "điện thoại":
+                                @:📱
+                                break;
+                            case "laptop":
+                                @:💻
+                                break;
+                            case "tai nghe":
+                                @:🎧
+                                break;
+                            case "smartwatch":
+                                @:⌚
+                                break;
+                            case "camera":
+                                @:📷
+                                break;
+                            case "chuột":
+                                @:🖱️
+                                break;
+                            case "bàn phím":
+                                @:⌨️
+                                break;
+                            case "tablet":
+                                @:📲
+                                break;
+                            default:
+                                @:📦
+                                break;
+                        }
+                    </div>
+                    <div>@category.CategoryName</div>
+                </a>
+            }
+        }
+        else
+        {
+            <!-- Default categories if no data -->
+            <div class="category-card">
+                <div class="category-icon">📱</div>
+                <div>Điện thoại</div>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">💻</div>
+                <div>Laptop</div>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🎧</div>
+                <div>Tai nghe</div>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">⌚</div>
+                <div>Smartwatch</div>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">📷</div>
+                <div>Camera</div>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">🖱️</div>
+                <div>Chuột</div>
+            </div>
+        }
+    </div>
+</div>

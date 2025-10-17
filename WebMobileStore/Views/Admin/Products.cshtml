@@ -53,6 +53,8 @@
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="action-btn delete">Xóa</button>
                                 </form>
+                                <a asp-controller="Admin" asp-action="AddProductVariant" asp-route-id="@product.ProductId" class="action-btn edit">Thêm Chi tiết</a>
+
                             </td>
                         </tr>
                     }

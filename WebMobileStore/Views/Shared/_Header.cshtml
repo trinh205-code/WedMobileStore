@@ -1,0 +1,32 @@
+﻿<header>
+    <div class="header-container">
+        <a asp-controller="Home" asp-action="Index" class="logo">🛒 TechStore</a>
+        <div class="search-box">
+            <form asp-controller="Shop" asp-action="Search" method="get">
+                <input type="text" name="keyword" placeholder="Tìm kiếm điện thoại, laptop, phụ kiện...">
+                <button type="submit">Tìm</button>
+            </form>
+        </div>
+        <div class="header-actions">
+            <div class="cart-icon" onclick="openCart()">
+                🛍️
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="user-menu">
+                    <span>👤 @User.Identity.Name</span>
+                    <div class="dropdown">
+                        <a asp-controller="Account" asp-action="Profile">Tài khoản</a>
+                        <a asp-controller="Account" asp-action="Orders">Đơn hàng</a>
+                        <a asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="login-btn">Đăng nhập</a>
+            }
+        </div>
+    </div>
+</header>

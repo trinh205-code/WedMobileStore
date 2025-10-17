@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - TechStore</title>
+    <link rel="stylesheet" href="~/css/m.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a asp-controller="Home" asp-action="Index" class="logo">🛒 TechStore</a>
+            <div class="search-box">
+                <input type="text" placeholder="Tìm kiếm điện thoại, laptop, phụ kiện...">
+                <button>Tìm</button>
+            </div>
+            <div class="header-actions">
+                <div class="cart-icon" onclick="openCart()">
+                    🛍️
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <span>Đăng nhập</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#phones">📱 Điện thoại</a>
+            <a href="#laptops">💻 Laptop</a>
+            <a href="#accessories">🎧 Phụ kiện</a>
+            <a href="#smartwatch">⌚ Smartwatch</a>
+            <a href="#tablet">📲 Tablet</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Về chúng tôi</h3>
+                <a href="#">Giới thiệu công ty</a>
+                <a href="#">Tuyển dụng</a>
+                <a href="#">Liên hệ</a>
+            </div>
+            <div class="footer-section">
+                <h3>Chính sách</h3>
+                <a href="#">Chính sách bảo hành</a>
+                <a href="#">Chính sách đổi trả</a>
+                <a href="#">Chính sách vận chuyển</a>
+            </div>
+            <div class="footer-section">
+                <h3>Hỗ trợ khách hàng</h3>
+                <a href="#">Hotline: 1900 xxxx</a>
+                <a href="#">Email: support@techstore.vn</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-section">
+                <h3>Theo dõi chúng tôi</h3>
+                <a href="#">📘 Facebook</a>
+                <a href="#">📸 Instagram</a>
+                <a href="#">📺 YouTube</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🛍️ Giỏ hàng của bạn</h2>
+                <span class="close-modal" onclick="closeCart()">&times;</span>
+            </div>
+            <div id="cartItems"></div>
+            <div class="cart-total">
+                Tổng cộng: <span id="totalPrice">0đ</span>
+            </div>
+            <button class="checkout-btn">Thanh toán</button>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/m.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

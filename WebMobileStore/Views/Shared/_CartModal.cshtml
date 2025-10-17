@@ -1,0 +1,29 @@
+﻿<div class="modal" id="cartModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🛍️ Giỏ hàng của bạn</h2>
+            <span class="close-modal" onclick="closeCart()">&times;</span>
+        </div>
+        <div id="cartItems">
+            <!-- Cart items will be loaded here via JavaScript -->
+        </div>
+        <div class="cart-summary">
+            <div class="cart-total">
+                <span>Tạm tính:</span>
+                <span id="subtotal">0đ</span>
+            </div>
+            <div class="cart-total">
+                <span>Phí vận chuyển:</span>
+                <span id="shippingFee">30.000đ</span>
+            </div>
+            <div class="cart-total total">
+                <span>Tổng cộng:</span>
+                <span id="totalPrice">0đ</span>
+            </div>
+        </div>
+        <div class="cart-actions">
+            <button class="continue-shopping-btn" onclick="closeCart()">Tiếp tục mua sắm</button>
+            <a asp-controller="Cart" asp-action="Checkout" class="checkout-btn">Thanh toán</a>
+        </div>
+    </div>
+</div>

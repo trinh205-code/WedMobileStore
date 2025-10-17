@@ -1,0 +1,20 @@
+﻿@model string
+
+<div class="banner @Model">
+    @if (Model == "flash-sale")
+    {
+        <h1>🔥 FLASH SALE CUỐI TUẦN</h1>
+        <p>Giảm giá đến 50% - Miễn phí vận chuyển toàn quốc</p>
+        <div class="flash-sale-timer">Kết thúc sau: <span id="countdown">02:45:30</span></div>
+    }
+    else if (Model == "new-arrival")
+    {
+        <h1>🎉 SẢN PHẨM MỚI VỀ</h1>
+        <p>Cập nhật những mẫu mã mới nhất</p>
+    }
+    else
+    {
+        <h1>🛒 CHÀO MỪNG ĐÉN TECHSTORE</h1>
+        <p>Nơi mua sắm công nghệ uy tín</p>
+    }
+</div>

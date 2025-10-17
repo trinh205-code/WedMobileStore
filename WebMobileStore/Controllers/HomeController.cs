@@ -1,32 +1,100 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using WebMobileStore.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebMobileStore.Models.Data;
+using WebMobileStore.ViewModels;
 
 namespace WebMobileStore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly MobileStoreContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(MobileStoreContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                var viewModel = new HomeViewModel
+                {
+                    Categories = _context.Categories
+                        .Include(c => c.Brands)
+                        .Take(8)
+                        .ToList(),
+
+                    FlashSaleProducts = _context.Products
+                        .Include(p => p.ProductImages)
+                        .Include(p => p.ProductVariants)
+                        .Where(p => p.IsActive)
+                        .OrderBy(p => Guid.NewGuid()) // Random
+                        .Take(8)
+                        .ToList(),
+
+                    RecommendedProducts = _context.Products
+                        .Include(p => p.ProductImages)
+                        .Include(p => p.ProductVariants)
+                        .Where(p => p.IsActive)
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Take(12)
+                        .ToList(),
+
+                    NewProducts = _context.Products
+                        .Include(p => p.ProductImages)
+                        .Include(p => p.ProductVariants)
+                        .Where(p => p.IsActive)
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Take(8)
+                        .ToList(),
+
+                    TopSellingProducts = _context.Products
+                        .Include(p => p.ProductImages)
+                        .Include(p => p.ProductVariants)
+                        .Where(p => p.IsActive)
+                        .OrderBy(p => Guid.NewGuid())
+                        .Take(8)
+                        .ToList()
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Không thể tải dữ liệu: " + ex.Message;
+                return View(new HomeViewModel());
+            }
         }
 
-        public IActionResult Privacy()
+        public IActionResult About()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Contact()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
+        }
+
+        public IActionResult FAQ()
+        {
+            return View();
+        }
+
+        public IActionResult Warranty()
+        {
+            return View();
+        }
+
+        public IActionResult Return()
+        {
+            return View();
+        }
+
+        public IActionResult Shipping()
+        {
+            return View();
         }
     }
 }

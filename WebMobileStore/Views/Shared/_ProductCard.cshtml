@@ -1,0 +1,77 @@
+﻿@model WebMobileStore.Models.Entity.Products
+
+<div class="product-card" data-product-id="@Model.ProductId">
+    <div class="product-image">
+        @if (Model.ProductImages != null && Model.ProductImages.Any())
+        {
+            <img src="@Model.ProductImages.FirstOrDefault()?.ImageUrl" alt="@Model.ProductsName" />
+        }
+        else
+        {
+            <img src="~/images/no-image.png" alt="@Model.ProductsName" />
+        }
+
+        @if (Model.ProductVariants != null && Model.ProductVariants.Any())
+        {
+            var discount = Model.ProductVariants.FirstOrDefault()?.CompareAtPrice;
+            if (discount.HasValue && discount.Value > Model.Price)
+            {
+                var percentOff = Math.Round((discount.Value - Model.Price) / discount.Value * 100);
+                <div class="discount-badge">-@percentOff%</div>
+            }
+        }
+    </div>
+
+    <div class="product-info">
+        <h3 class="product-name">@Model.ProductsName</h3>
+
+      @*   @if (Model.ProductVariants != null && Model.ProductVariants.Any())
+        {
+            var variant = Model.ProductVariants.FirstOrDefault();
+            if (variant.CompareAtPrice.HasValue && ((float)variant.CompareAtPrice) > Model.Price)
+            {
+                <div class="product-price">
+                    <span class="current-price">@Model.Price.ToString("N0")đ</span>
+                    <span class="original-price">@variant.CompareAtPrice.Value.ToString("N0")đ</span>
+                </div>
+            }
+            else
+            {
+                <div class="product-price">
+                    <span class="current-price">@Model.Price.ToString("N0")đ</span>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="product-price">
+                <span class="current-price">@Model.Price.ToString("N0")đ</span>
+            </div>
+        } *@
+
+        <div class="product-rating">
+            ⭐⭐⭐⭐⭐ <span>(4.5)</span>
+        </div>
+
+        @if (Model.ProductVariants != null && Model.ProductVariants.Any())
+        {
+            <div class="product-variants">
+                @foreach (var variant in Model.ProductVariants.Take(4))
+                {
+                    <span class="variant-option" data-variant-id="@variant.ProductVariantId">
+                        @variant.Color
+                    </span>
+                }
+            </div>
+        }
+
+        <div class="product-actions">
+            <button class="add-to-cart-btn" onclick="addToCart(@Model.ProductId)">
+                🛒 Thêm vào giỏ
+            </button>
+            <a asp-controller="Shop" asp-action="ProductDetail" asp-route-id="@Model.ProductId" class="view-detail-btn">
+                Xem chi tiết
+            </a>
+        </div>
+    </div>
+</div>

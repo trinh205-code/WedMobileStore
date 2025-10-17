@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMobileStore.Models.Data;
 using WebMobileStore.Models.Entity;
@@ -51,7 +52,65 @@ namespace WebMobileStore.Controllers
             
         }
 
-        // AddProduct GET - Form thêm sản phẩm
+        [HttpGet("AddProductVariant/{id?}")]
+        public IActionResult AddProductVariant(long? id)
+        {
+            try
+            {
+                var products = db.Products.ToList();
+
+                ViewBag.Products = new SelectList(products, "ProductId", "ProductsName", id);
+
+                var model = new ProductVariant
+                {
+                    ProductId = id ?? 0,
+                    IsActive = true
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi: " + ex.Message;
+                return RedirectToAction("Products");
+            }
+        }
+
+
+
+        [HttpPost("AddProductVariant")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddProductVariant(ProductVariant variant)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    variant.CreatedAt = DateTime.Now;
+                    variant.IsActive = true;
+
+                    db.ProductVariants.Add(variant);
+                    db.SaveChanges();
+
+                    TempData["Success"] = "Thêm biến thể sản phẩm thành công!";
+                    return RedirectToAction("Products");
+                }
+
+                var products = db.Products.ToList();
+                ViewBag.Products = new SelectList(products, "ProductId", "ProductsName", variant.ProductId);
+
+                return View(variant);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi: " + ex.Message;
+                var products = db.Products.ToList();
+                ViewBag.Products = new SelectList(products, "ProductId", "ProductsName", variant.ProductId);
+                return View(variant);
+            }
+        }
+
+
         [HttpGet("AddProduct")]
         public IActionResult AddProduct()
         {
