@@ -42,13 +42,30 @@ namespace WebMobileStore.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Add(Categories category)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Categories.Add(category);
+                db.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(category);
+        }
+
+
         // Products - Danh sách sản phẩm
         [HttpGet("Products")]
         public IActionResult Products()
         {
-                var products = db.Products.ToList();
+            var products = db.Products
+                            .Include(p => p.Brand)
+                            .Include(p => p.ProductImages) 
+                            .ToList();
 
-                return View(products);
+            return View(products);
             
         }
 
@@ -132,78 +149,55 @@ namespace WebMobileStore.Controllers
             }
         }
 
-        // AddProduct POST - Xử lý thêm sản phẩm
         [HttpPost("AddProduct")]
         [ValidateAntiForgeryToken]
-        public IActionResult AddProduct([Bind("ProductsName,CategoryId,BrandId,Price,Quantity,Description")] Products product)
+        public IActionResult AddProduct([Bind("ProductsName,CategoryId,BrandId,Price,Quantity,Description")] Products product,
+                                string ImageUrls)
         {
-
             try
             {
-                if (product == null)
-                {
-                    TempData["Error"] = "Dữ liệu sản phẩm không hợp lệ!";
-                    return RedirectToAction("AddProduct");
-                }
-
                 if (ModelState.IsValid)
                 {
-                    // Kiểm tra các trường bắt buộc
-                    if (string.IsNullOrWhiteSpace(product.ProductsName))
-                    {
-                        TempData["Error"] = "Tên sản phẩm không được để trống!";
-                        ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
-                        ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
-                        return View(product);
-                    }
-
-                    if (product.Price <= 0)
-                    {
-                        TempData["Error"] = "Giá sản phẩm phải lớn hơn 0!";
-                        ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
-                        ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
-                        return View(product);
-                    }
-
-                    // Kiểm tra category có tồn tại không
-                    var categoryExists = db.Categories.Any(c => c.CategoryId == product.CategoryId);
-                    if (!categoryExists)
-                    {
-                        TempData["Error"] = "Danh mục không tồn tại!";
-                        ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
-                        ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
-                        return View(product);
-                    }
-
+                    // 👉 Lưu sản phẩm trước để có ProductId
                     db.Products.Add(product);
                     db.SaveChanges();
+
+                    // 👉 Thêm ảnh nếu có
+                    if (!string.IsNullOrWhiteSpace(ImageUrls))
+                    {
+                        var urls = ImageUrls.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        int order = 1;
+                        foreach (var url in urls)
+                        {
+                            var trimmedUrl = url.Trim();
+                            if (!string.IsNullOrEmpty(trimmedUrl))
+                            {
+                                var image = new ProductImage
+                                {
+                                    ProductId = product.ProductId,
+                                    ImageUrl = trimmedUrl,
+                                    DisplayOrder = order++
+                                };
+                                db.ProductImages.Add(image);
+                            }
+                        }
+
+                        db.SaveChanges();
+                    }
 
                     TempData["Success"] = "Thêm sản phẩm thành công!";
                     return RedirectToAction("Products");
                 }
 
-                var errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                TempData["Error"] = "Có lỗi xảy ra: " + string.Join(", ", errors);
-                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
-                return View(product);
-            }
-            catch (DbUpdateException ex)
-            {
-                TempData["Error"] = "Lỗi cơ sở dữ liệu: " + (ex.InnerException?.Message ?? ex.Message);
-                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = db.Categories.ToList();
+                ViewBag.Brands = db.Brands.ToList();
                 return View(product);
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Có lỗi xảy ra: " + ex.Message;
-                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
+                TempData["Error"] = "Lỗi: " + ex.Message;
+                ViewBag.Categories = db.Categories.ToList();
+                ViewBag.Brands = db.Brands.ToList();
                 return View(product);
             }
         }

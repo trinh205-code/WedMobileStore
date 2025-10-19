@@ -20,6 +20,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Ảnh</th>
                         <th>Tên sản phẩm</th>
                         <th>Thương hiệu</th>
                         <th>Giá</th>
@@ -33,10 +34,24 @@
                     {
                         <tr>
                             <td>@product.ProductId</td>
+
+                            <td>
+                                @if (product.ProductImages != null && product.ProductImages.Any())
+                                {
+                                    var firstImage = product.ProductImages.First().ImageUrl;
+                                    <img src="@firstImage" alt="Ảnh sản phẩm" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;" />
+                                }
+                                else
+                                {
+                                    <span>Không có ảnh</span>
+                                }
+                            </td>
+
                             <td>@(product.ProductsName ?? "N/A")</td>
                             <td>@(product.Brand?.BrandName ?? "N/A")</td>
                             <td>@product.Price.ToString("N0")₫</td>
                             <td>@product.Quantity</td>
+
                             <td>
                                 @if (product.IsActive)
                                 {
@@ -47,6 +62,7 @@
                                     <span class="status-badge danger">Ngừng bán</span>
                                 }
                             </td>
+
                             <td>
                                 <a asp-controller="Admin" asp-action="EditProduct" asp-route-id="@product.ProductId" class="action-btn edit">Sửa</a>
                                 <form asp-controller="Admin" asp-action="DeleteProduct" asp-route-id="@product.ProductId" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
@@ -54,7 +70,7 @@
                                     <button type="submit" class="action-btn delete">Xóa</button>
                                 </form>
                                 <a asp-controller="Admin" asp-action="AddProductVariant" asp-route-id="@product.ProductId" class="action-btn edit">Thêm Chi tiết</a>
-
+                                <a asp-controller="Admin" asp-action="AddProductVariant" asp-route-id="@product.ProductId" class="action-btn edit">HĐ</a>
                             </td>
                         </tr>
                     }

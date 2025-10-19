@@ -19,13 +19,16 @@ namespace WebMobileStore.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
+            
             var products = db.Products
                 .Include(p => p.ProductImages)
                 .Include(p => p.ProductVariants)
-                .Include(p => p.Brand)
+                .Include(p => p.Brand )
                 .Where(p => p.IsActive)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToList();
+
+            
 
             ViewBag.Title = "Tất cả sản phẩm";
             return View(products);
