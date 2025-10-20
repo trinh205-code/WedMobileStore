@@ -216,8 +216,9 @@ namespace WebMobileStore.Controllers
                     return RedirectToAction("Products");
                 }
 
-                ViewBag.Categories = db.Categories?.ToList() ?? new List<Categories>();
-                ViewBag.Brands = db.Brands?.ToList() ?? new List<Brand>();
+                ViewBag.Categories = new SelectList(db.Categories.ToList(), "CategoryId", "CategoryName", product?.CategoryId);
+                ViewBag.Brands = new SelectList(db.Brands.ToList(), "BrandId", "BrandName", product?.BrandId);
+
 
                 return View(product);
             }
