@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<WebMobileStore.Models.Entity.Products>
+@section Styles {
+    <link rel="stylesheet" href="~/css/products.css" asp-append-version="true" />
+}
 
 @{
     ViewBag.Title = "Quản lý sản phẩm";
@@ -12,6 +15,51 @@
             <span>➕</span> Thêm sản phẩm
         </a>
     </div>
+
+    <!-- 🔍 Thanh tìm kiếm và lọc -->
+    <form asp-controller="Admin" asp-action="Products" method="get" class="filter-bar">
+        <input type="text" name="searchTerm" placeholder="Tìm theo tên sản phẩm..."
+               value="@Context.Request.Query["searchTerm"]" class="filter-search" />
+
+        <select name="categoryId" class="filter-select">
+            <option value="">-- Loại sản phẩm --</option>
+            @foreach (var c in (IEnumerable<WebMobileStore.Models.Entity.Categories>)ViewBag.Categories)
+            {
+                var isSelected = Context.Request.Query["categoryId"] == c.CategoryId.ToString();
+
+                if (isSelected)
+                {
+                    <option value="@c.CategoryId" selected>@c.CategoryName</option>
+                }
+                else
+                {
+                    <option value="@c.CategoryId">@c.CategoryName</option>
+                }
+            }
+
+        </select>
+
+        <select name="brandId" class="filter-select">
+            <option value="">-- Thương hiệu --</option>
+            @foreach (var b in (IEnumerable<WebMobileStore.Models.Entity.Brand>)ViewBag.Brands)
+            {
+                var isSelected = Context.Request.Query["brandId"] == b.BrandId.ToString();
+
+                if (isSelected)
+                {
+                    <option value="@b.BrandId" selected>@b.BrandName</option>
+                }
+                else
+                {
+                    <option value="@b.BrandId">@b.BrandName</option>
+                }
+            }
+
+        </select>
+
+        <button type="submit" class="btn-primary filter-btn">Tìm kiếm</button>
+    </form>
+
 
     <div class="table-card">
         @if (Model != null && Model.Any())
@@ -69,8 +117,16 @@
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="action-btn delete">Xóa</button>
                                 </form>
-                                <a asp-controller="Admin" asp-action="AddProductVariant" asp-route-id="@product.ProductId" class="action-btn edit">Thêm Chi tiết</a>
-                                <a asp-controller="Admin" asp-action="AddProductVariant" asp-route-id="@product.ProductId" class="action-btn edit">HĐ</a>
+                                <a asp-controller="Admin" asp-action="Variant" asp-route-id="@product.ProductId" class="action-btn edit">Thêm Chi tiết</a>
+                                <form asp-controller="Admin" asp-action="ActiveProduct"
+                                      asp-route-id="@product.ProductId" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="action-btn edit">
+                                        @(product.IsActive ? "TẮT" : "BẬT")
+                                    </button>
+                                </form>
+
+
                             </td>
                         </tr>
                     }

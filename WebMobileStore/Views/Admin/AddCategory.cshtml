@@ -7,7 +7,7 @@
 <div class="page-content">
     <h2 class="page-title">Thêm loại sản phẩm mới</h2>
     <div class="form-card">
-        <form asp-controller="Category" asp-action="Add" method="post">
+        <form asp-controller="Admin" asp-action="AddCategory" method="post">
             @Html.AntiForgeryToken()
             <div class="form-group">
                 <label asp-for="CategoryName" class="form-label">Tên loại sản phẩm</label>

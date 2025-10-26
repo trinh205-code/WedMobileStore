@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Admin Dashboard</title>
     <link rel="stylesheet" href="~/css/ad.css" />
+    @RenderSection("Styles", required: false)
+
 </head>
+
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -33,6 +37,20 @@
             <a asp-controller="Admin" asp-action="Categories" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Categories" ? "active" : "")">
                 <span>📂</span>
                 <span>Danh mục</span>
+            </a>
+
+            <a asp-controller="Admin" asp-action="AddBrand"
+               class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "AddBrand" ? "active" : "")"
+               style="display:none">
+                <span>📂</span>
+                <span>Danh mục</span>
+            </a>
+
+
+       
+            <a asp-controller="Admin" asp-action="Brands" class="menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Brands" ? "active" : "")">
+                <span>📱</span>
+                <span>Hãng Sản Phẩm</span>
             </a>
         </div>
 

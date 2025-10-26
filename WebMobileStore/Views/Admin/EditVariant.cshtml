@@ -1,0 +1,167 @@
+﻿@model WebMobileStore.Models.Entity.ProductVariant
+@{
+    ViewData["Title"] = "Chỉnh sửa biến thể";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/variant-edit.css" asp-append-version="true" />
+}
+
+<div class="page-content">
+    <h2 class="page-title">Chỉnh sửa biến thể: @ViewBag.ProductName</h2>
+
+    <div class="form-card">
+        <form asp-action="EditVariant" asp-controller="Admin" method="post" id="editVariantForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ProductVariantId" />
+            <input type="hidden" asp-for="ProductId" />
+
+            <div class="product-info">
+                <div class="info-item">
+                    <span class="label">Sản phẩm:</span>
+                    <span class="value">@ViewBag.ProductName</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Danh mục:</span>
+                    <span class="value">@ViewBag.CategoryName</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Hãng:</span>
+                    <span class="value">@ViewBag.BrandName</span>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h3>Thông tin biến thể</h3>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Dung lượng *</label>
+                    <select asp-for="Storage" class="form-select" required>
+                        <option value="">-- Chọn dung lượng --</option>
+                        <option value="64GB">64GB</option>
+                        <option value="128GB">128GB</option>
+                        <option value="256GB">256GB</option>
+                        <option value="512GB">512GB</option>
+                        <option value="1TB">1TB</option>
+                        <option value="2TB">2TB</option>
+                    </select>
+                    <span asp-validation-for="Storage" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Màu sắc *</label>
+                    <select asp-for="Color" class="form-select" required>
+                        <option value="">-- Chọn màu --</option>
+                        <option value="Đen">Đen</option>
+                        <option value="Trắng">Trắng</option>
+                        <option value="Vàng">Vàng</option>
+                        <option value="Xanh Dương">Xanh Dương</option>
+                        <option value="Xanh Lá">Xanh Lá</option>
+                        <option value="Đỏ">Đỏ</option>
+                        <option value="Tím">Tím</option>
+                        <option value="Bạc">Bạc</option>
+                        <option value="Hồng">Hồng</option>
+                    </select>
+                    <span asp-validation-for="Color" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Số lượng *</label>
+                    <input type="number" asp-for="Quantity" class="form-input" min="0" required />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                    <small class="form-hint">Số lượng tồn kho</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Giá gốc (VNĐ)</label>
+                    <input type="number" asp-for="CompareAtPrice" class="form-input" min="0" step="1000" placeholder="0" />
+                    <span asp-validation-for="CompareAtPrice" class="text-danger"></span>
+                    <small class="form-hint">Giá trước khi giảm</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Giá bán (VNĐ) *</label>
+                    <input type="number" asp-for="Price" class="form-input" min="0" step="1000" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                    <small class="form-hint">Giá bán thực tế</small>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Trạng thái</label>
+                <div class="status-toggle">
+                    <input type="checkbox" asp-for="IsActive" id="isActiveToggle" />
+                    <label for="isActiveToggle" class="toggle-label">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">Đang hoạt động</span>
+                    </label>
+                </div>
+                <small class="form-hint">Tắt để ngừng bán biến thể này</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15.854 5.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L8.5 11.793l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                    </svg>
+                    Lưu thay đổi
+                </button>
+                <a asp-controller="Admin"
+                   asp-action="ProductVariantList"
+                   asp-route-id="@Model.ProductId"
+                   class="cancel-btn">
+                    Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Preview color when selecting
+        document.querySelector('select[name="Color"]').addEventListener('change', function() {
+            const colorName = this.value;
+            const colors = {
+                'Đen': '#000000',
+                'Trắng': '#FFFFFF',
+                'Vàng': '#FFD700',
+                'Xanh Dương': '#1E90FF',
+                'Xanh Lá': '#32CD32',
+                'Đỏ': '#DC143C',
+                'Tím': '#9370DB',
+                'Bạc': '#C0C0C0',
+                'Hồng': '#FF69B4'
+            };
+
+            if (colors[colorName]) {
+                this.style.borderColor = colors[colorName];
+            }
+        });
+
+        // Validate prices
+        document.getElementById('editVariantForm').addEventListener('submit', function(e) {
+            const comparePrice = parseFloat(document.querySelector('input[name="CompareAtPrice"]').value) || 0;
+            const sellPrice = parseFloat(document.querySelector('input[name="Price"]').value);
+
+            if (comparePrice > 0 && sellPrice > comparePrice) {
+                alert('Giá bán không được lớn hơn giá gốc!');
+                e.preventDefault();
+                return false;
+            }
+
+            if (sellPrice <= 0) {
+                alert('Giá bán phải lớn hơn 0!');
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+}

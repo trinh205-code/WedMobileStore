@@ -3,11 +3,19 @@
 <div class="product-grid">
     @if (Model != null && Model.Any())
     {
-        foreach (var product in Model)
+        @foreach (var product in Model)
         {
-            @await Html.PartialAsync("_ProductCard", product)
+
+            
+                @await Html.PartialAsync("_ProductCard", product)
+
+            
+            
         }
-    }   
+
+        
+   
+    }
     else
     {
         <div class="no-products">

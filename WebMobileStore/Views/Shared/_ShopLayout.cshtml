@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - TechStore</title>
-    <link rel="stylesheet" href="~/css/m.css">
+    <link rel="stylesheet" href="~/css/m.css" asp-append-version="true">
 </head>
-<body>
+    <body>
     <!-- Header -->
     <header>
         <div class="header-container">
@@ -17,10 +17,29 @@
             </div>
             <div class="header-actions">
                 <div class="cart-icon" onclick="openCart()">
-                    🛍️
+                    <img src="~/image/icons8-cart-25.png" alt="Cart" class="cart-avatar" />
                     <span class="cart-count" id="cartCount">0</span>
                 </div>
-                <span>Đăng nhập</span>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="user-menu">
+                        <img src="~/image/icons8-account-30.png" alt="Avatar" class="user-avatar" />
+                        <span>@User.Identity.Name</span>
+                        <div class="dropdown">
+                            <a asp-controller="User" asp-action="Profile">Tài khoản</a>
+                            <a asp-controller="Account" asp-action="Orders">Đơn hàng</a>
+                            <a asp-controller="User" asp-action="Logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a asp-controller="User" asp-action="Login" class="login-link">
+                        <img src="~/image/icons8-account-30.png" alt="Avatar" class="user-avatar" />
+                        <span>Đăng nhập</span>
+                    </a>
+                }
             </div>
         </div>
     </header>

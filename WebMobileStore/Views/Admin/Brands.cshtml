@@ -1,0 +1,95 @@
+﻿@model IEnumerable<WebMobileStore.Models.Entity.Brand>
+
+@{
+    ViewBag.Title = "Quản lý thương hiệu";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content">
+    @Html.AntiForgeryToken()
+
+    <div class="page-header">
+        <h2 class="page-title">Quản lý thương hiệu</h2>
+        <a asp-controller="Admin" asp-action="AddBrand" class="btn-primary">
+            ➕ Thêm thương hiệu
+        </a>
+    </div>
+
+    <div class="table-card">
+        @if (Model != null && Model.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ảnh</th>
+                        <th>Tên thương hiệu</th>
+                        <th>Danh mục</th>
+                        <th>Mô tả</th>
+                        <th>Số sản phẩm</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var brand in Model)
+                    {
+                        <tr>
+                            <td>@brand.BrandId</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(brand.Image))
+                                {
+                                    <img src=@brand.Image" alt="@brand.BrandName" width="60" height="60" style="object-fit:cover;border-radius:8px;" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/no-image.png" alt="Không có ảnh" width="60" height="60" style="object-fit:cover;border-radius:8px;" />
+                                }
+                            </td>
+                            <td>@brand.BrandName</td>
+                            <td>@brand.Category?.CategoryName</td>
+                            <td>@brand.Description</td>
+                            <td>@(brand.Products?.Count() ?? 0)</td>
+                            <td>
+                                <a asp-controller="Admin" asp-action="EditBrand" asp-route-id="@brand.BrandId" class="action-btn edit">Sửa</a>
+                                <button class="action-btn delete" onclick="deleteBrand(@brand.BrandId)">Xóa</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>🏷️ Chưa có thương hiệu nào</p>
+                <a asp-controller="Admin" asp-action="AddBrand" class="btn-primary">Thêm thương hiệu đầu tiên</a>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function deleteBrand(id) {
+        if (confirm("Bạn có chắc muốn xoá thương hiệu này không?")) {
+            // Lấy token từ input ẩn được render bởi @Html.AntiForgeryToken()
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch(`/Admin/DeleteBrand/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                }
+            }).then(res => {
+                if (res.ok) {
+                    alert("✅ Đã xoá thương hiệu thành công!");
+                    location.reload();
+                } else {
+                    alert("❌ Xoá thất bại (HTTP " + res.status + ")");
+                }
+            }).catch(err => {
+                alert("Lỗi mạng: " + err);
+            });
+        }
+    }
+</script>

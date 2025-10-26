@@ -13,7 +13,6 @@ namespace WebMobileStore.Models.Entity
         [Column(TypeName = "nvarchar(100)")]
         public string District { get; set; }
         [Column(TypeName = "nvarchar(100)")]
-
         public string City { get; set; }
 
         public long UserId { get; set; }

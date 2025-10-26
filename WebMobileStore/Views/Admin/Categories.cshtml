@@ -9,7 +9,7 @@
     <div class="page-header">
         <h2 class="page-title">Quản lý danh mục</h2>
         <button class="btn-primary" ">
-            <span asp-controller="Admin" asp-action="AddProductVariant">➕</span> Thêm danh mục
+            <a asp-controller="Admin" asp-action="AddCategory">➕</a> Thêm danh mục
         </button>
 
     </div>
@@ -34,8 +34,11 @@
                             <td>@(category.CategoryName ?? "N/A")</td>
                             <td>@(category.Brands?.Count() ?? 0)</td>
                             <td>
-                                <button class="action-btn edit" onclick="editCategory(@category.CategoryId)">Sửa</button>
-                                <button class="action-btn delete" onclick="deleteCategory(@category.CategoryId)">Xóa</button>
+                                <a asp-controller="Admin" asp-action="EditCategory" asp-route-id="@category.CategoryId" class="action-btn edit">Sửa</a>
+                                <form asp-controller="Admin" asp-action="DeleteCategory" asp-route-id="@category.CategoryId" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="action-btn delete">Xóa</button>
+                                </form>
                             </td>
                         </tr>
                     }

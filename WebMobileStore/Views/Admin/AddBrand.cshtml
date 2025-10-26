@@ -1,0 +1,49 @@
+﻿@model WebMobileStore.Models.Entity.Brand
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/brand.css" />
+}
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var isEdit = Model != null && Model.BrandId > 0;
+}
+
+<h2 class="brand-title">@(isEdit ? "Chỉnh sửa thương hiệu" : "Thêm thương hiệu")</h2>
+
+<form asp-action="@(isEdit ? "EditBrand" : "AddBrand")"
+      asp-controller="Admin"
+      asp-route-id="@(Model.BrandId)"
+      method="post"
+      class="brand-form">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="BrandId" />
+
+    <div class="brand-group">
+        <label class="brand-label">Tên thương hiệu</label>
+        <input asp-for="BrandName" class="brand-control" required />
+    </div>
+
+    <div class="brand-group">
+        <label class="brand-label">Mô tả</label>
+        <textarea asp-for="Description" class="brand-control"></textarea>
+    </div>
+
+    <div class="brand-group">
+        <label class="brand-label">Danh mục</label>
+        <select asp-for="CategoryId"
+                asp-items="@(new SelectList(ViewBag.Categories, "CategoryId", "CategoryName"))"
+                class="brand-control">
+            <option value="">-- Chọn danh mục --</option>
+        </select>
+    </div>
+
+    <div class="brand-group">
+        <label class="brand-label">Link ảnh thương hiệu (URL)</label>
+        <input asp-for="Image" class="brand-control" placeholder="https://logo.png" />
+    </div>
+
+    <button type="submit" class="brand-btn">💾 @(isEdit ? "Cập nhật" : "Lưu mới")</button>
+    <a asp-controller="Admin" asp-action="Brands" class="brand-btn-cancel">↩️ Quay lại</a>
+</form>

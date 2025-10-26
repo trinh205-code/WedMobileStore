@@ -1,50 +1,167 @@
-﻿@model WebMobileStore.Models.Entity.ProductVariant
-
-@{
-    ViewData["Title"] = "Thêm Chi tiết Sản phẩm";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+﻿@{
 
 }
+@{
+    ViewData["Title"] = "Thêm biến thể sản phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/variant-add.css" asp-append-version="true" />
+}
 
-<h2>Thêm biến thể sản phẩm</h2>
+<div class="page-content">
+    <h2 class="page-title">Thêm biến thể cho: @ViewBag.ProductName</h2>
 
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
+    <div class="form-card">
+        <form asp-action="AddProductVariant" asp-controller="Admin" method="post" id="variantForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductId" value="@ViewBag.ProductId" />
 
-    <div class="form-group">
-        <label asp-for="Color">Màu sắc</label>
-        <input asp-for="Color" class="form-control" />
+            <div class="product-info">
+                <div class="info-item">
+                    <span class="label">Sản phẩm:</span>
+                    <span class="value">@ViewBag.ProductName</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Danh mục:</span>
+                    <span class="value">@ViewBag.CategoryName</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Hãng:</span>
+                    <span class="value">@ViewBag.BrandName</span>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h3>Cấu hình biến thể</h3>
+                <button type="button" class="btn-add-variant" onclick="addVariantConfig()">
+                    <span>+</span> Thêm cấu hình
+                </button>
+            </div>
+
+            <div id="configContainer">
+                <!-- Cấu hình mặc định -->
+                <div class="config-row" data-index="0">
+                    <div class="config-header">
+                        <span class="config-number">Cấu hình #1</span>
+                        <button type="button" class="btn-remove-config" onclick="removeConfig(0)" style="display: none;">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                            </svg>
+                            Xóa
+                        </button>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Dung lượng *</label>
+                            <select class="form-select storage-select" data-config="0" required>
+                                <option value="">-- Chọn dung lượng --</option>
+                                <option value="64GB">64GB</option>
+                                <option value="128GB">128GB</option>
+                                <option value="256GB">256GB</option>
+                                <option value="512GB">512GB</option>
+                                <option value="1TB">1TB</option>
+                                <option value="2TB">2TB</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Màu sắc * (Chọn nhiều màu)</label>
+                        <div class="color-grid">
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Đen">
+                                <span class="color-box" style="background: #000;"></span>
+                                <span class="color-name">Đen</span>
+                            </label>
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Trắng">
+                                <span class="color-box" style="background: #fff; border: 1px solid #ddd;"></span>
+                                <span class="color-name">Trắng</span>
+                            </label>
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Vàng">
+                                <span class="color-box" style="background: #ffd700;"></span>
+                                <span class="color-name">Vàng</span>
+                            </label>
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Xanh Dương">
+                                <span class="color-box" style="background: #1e90ff;"></span>
+                                <span class="color-name">Xanh Dương</span>
+                            </label>
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Xanh Lá">
+                                <span class="color-box" style="background: #32cd32;"></span>
+                                <span class="color-name">Xanh Lá</span>
+                            </label>
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Đỏ">
+                                <span class="color-box" style="background: #dc143c;"></span>
+                                <span class="color-name">Đỏ</span>
+                            </label>
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Tím">
+                                <span class="color-box" style="background: #9370db;"></span>
+                                <span class="color-name">Tím</span>
+                            </label>
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Bạc">
+                                <span class="color-box" style="background: #c0c0c0;"></span>
+                                <span class="color-name">Bạc</span>
+                            </label>
+                            <label class="color-checkbox">
+                                <input type="checkbox" class="color-input" data-config="0" value="Hồng">
+                                <span class="color-box" style="background: #ff69b4;"></span>
+                                <span class="color-name">Hồng</span>
+                            </label>
+                           
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Số lượng mỗi biến thể *</label>
+                            <input type="number" class="form-input quantity-input" data-config="0" min="0" value="1" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Giá gốc (VNĐ)</label>
+                            <input type="number" class="form-input price-input compare-price" data-config="0" min="0" step="1000" placeholder="0" />
+                            <small class="form-hint">Giá trước khi giảm</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Giá bán (VNĐ) *</label>
+                            <input type="number" class="form-input price-input sell-price" data-config="0" min="0" step="1000" required placeholder="29990000" />
+                            <small class="form-hint">Giá bán thực tế</small>
+                        </div>
+                    </div>
+
+                   
+                </div>
+            </div>
+
+            <!-- Hidden input để chứa dữ liệu biến thể -->
+            <div id="variantsData"></div>
+
+            <div class="form-actions">
+                
+                <button type="submit" class="submit-btn">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15.854 5.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L8.5 11.793l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                    </svg>
+                    Lưu biến thể
+                </button>
+                <a asp-controller="Admin" asp-action="AddProductVariant" asp-route-id="@Model.ProductId" class="cancel-btn">
+                    Hủy
+                </a>
+            </div>
+        </form>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Storage">Dung lượng</label>
-        <select asp-for="Storage" class="form-control">
-            <option>128GB</option>
-            <option>256GB</option>
-            <option>512GB</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Price">Giá bán</label>
-        <input asp-for="Price" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CompareAtPrice">Giá gốc</label>
-        <input asp-for="CompareAtPrice" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Quantity">Số lượng</label>
-        <input asp-for="Quantity" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ProductId">Sản phẩm</label>
-        <select asp-for="ProductId" asp-items="ViewBag.ProductId" class="form-control"></select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>
+@section Scripts {
+    <script src="~/js/variant.js"></script>
+}

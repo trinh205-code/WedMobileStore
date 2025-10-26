@@ -5,6 +5,7 @@ using WebMobileStore.ViewModels;
 
 namespace WebMobileStore.Controllers
 {
+    [Route("/")]
     public class HomeController : Controller
     {
         private readonly MobileStoreContext _context;
@@ -14,6 +15,15 @@ namespace WebMobileStore.Controllers
             _context = context;
         }
 
+        [HttpGet("AccessDenied")]
+        public IActionResult AccessDenied()
+        {
+            return Redirect("Index");
+        }
+
+
+        [HttpGet("")] 
+        [HttpGet("Index")] 
         public IActionResult Index()
         {
             try
@@ -29,7 +39,7 @@ namespace WebMobileStore.Controllers
                         .Include(p => p.ProductImages)
                         .Include(p => p.ProductVariants)
                         .Where(p => p.IsActive)
-                        .OrderBy(p => Guid.NewGuid()) // Random
+                        .OrderBy(p => Guid.NewGuid()) 
                         .Take(8)
                         .ToList(),
 

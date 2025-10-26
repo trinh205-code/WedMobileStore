@@ -1,0 +1,276 @@
+﻿:root {
+    --bg: #f6f8fb;
+    --card: #ffffff;
+    --accent: #2563eb;
+    --muted: #6b7280;
+    --danger: #dc2626;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, var(--bg), #eef2ff);
+}
+
+/* ---- CARD FORM ---- */
+.card {
+    width: 420px;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0 0 6px;
+    text-align: center;
+}
+
+p.lead {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ---- INPUT FIELD ---- */
+label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #111827;
+}
+
+.field {
+    margin-bottom: 14px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e6e9ef;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.06);
+}
+
+/* ---- BUTTON ---- */
+.btn {
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 0;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+
+    .btn:hover {
+        background: #1e4ed8;
+    }
+
+/* ---- TEXT SMALL ---- */
+.small {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* ---- VALIDATION ---- */
+input:invalid {
+    border-color: var(--danger);
+}
+
+input:required:valid {
+    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.06);
+}
+
+.req::after {
+    content: " *";
+    color: var(--danger);
+    font-weight: 600;
+}
+
+.note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+/* ---- REGISTER FORM KHUNG MÀU XANH ---- */
+.form-container {
+    background-color: #e0f0ff;
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 400px;
+    margin: 50px auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+    .form-container h2 {
+        text-align: center;
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+.input-box {
+    margin-bottom: 15px;
+}
+
+    .input-box label {
+        display: block;
+        margin-bottom: 5px;
+        color: #003366;
+    }
+
+    .input-box input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #b0d4f1;
+        border-radius: 6px;
+    }
+
+/* ---- PASSWORD STRENGTH BARS ---- */
+.pw-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bars {
+    display: flex;
+    gap: 6px;
+}
+
+.bar {
+    width: 36px;
+    height: 6px;
+    border-radius: 6px;
+    background: #eef2ff;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 460px) {
+    .card {
+        width: 92%;
+        padding: 16px;
+    }
+
+    .form-container {
+        margin: 20px;
+    }
+}
+
+
+.error-message {
+    color: #dc2626;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+
+.admin-user-edit-container {
+    max-width: 650px;
+    margin: auto;
+}
+
+.admin-user-edit-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.admin-user-edit-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.admin-user-edit-group {
+    margin-bottom: 15px;
+}
+
+.admin-user-edit-label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.admin-user-edit-input,
+.admin-user-edit-select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #c7c7c7;
+}
+
+.admin-user-edit-error {
+    font-size: 13px;
+    color: #e11d48;
+}
+
+.admin-user-edit-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.admin-user-edit-submit {
+    background: #2563eb;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.admin-user-edit-cancel {
+    background: #dc2626;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.admin-user-edit-wrapper {
+    min-height: 90vh; /* chiếm 90% chiều cao màn hình */
+    display: flex;
+    justify-content: center; /* căn giữa ngang */
+    align-items: center; /* căn giữa dọc */
+    padding: 20px;
+    background: #f7f9fc; /* nền nhẹ cho đẹp */
+}
+
+.admin-user-edit-container {
+    width: 100%;
+    max-width: 650px;
+}
+
+.admin-user-edit-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}

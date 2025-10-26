@@ -3,11 +3,16 @@
 <div class="product-grid">
     @if (Model != null && Model.Any())
     {
+        var oneMonthAgo = DateTime.Now.AddMonths(-1);
+
         foreach (var product in Model)
         {
-            @await Html.PartialAsync("_ProductCard", product)
+            if (product.CreatedAt >= oneMonthAgo)
+            {
+                @await Html.PartialAsync("_ProductCard", product)
+            }
         }
-    }   
+    }
     else
     {
         <div class="no-products">

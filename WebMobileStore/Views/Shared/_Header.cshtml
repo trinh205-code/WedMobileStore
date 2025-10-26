@@ -12,21 +12,26 @@
                 🛍️
                 <span class="cart-count" id="cartCount">0</span>
             </div>
-            @if (User.Identity.IsAuthenticated)
-            {
-                <div class="user-menu">
-                    <span>👤 @User.Identity.Name</span>
+           
+
+                @* <div class="user-menu">
+                    <img src="~/image/icons8-account-48.png" alt="Avatar" class="user-avatar" />
+                    <span>@User.Identity.Name</span>
                     <div class="dropdown">
-                        <a asp-controller="Account" asp-action="Profile">Tài khoản</a>
+                        <a asp-controller="User" asp-action="Profile">Tài khoản</a>
                         <a asp-controller="Account" asp-action="Orders">Đơn hàng</a>
-                        <a asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                        <a asp-controller="User" asp-action="Logout">Đăng xuất</a>
                     </div>
-                </div>
-            }
-            else
-            {
-                <a asp-controller="Account" asp-action="Login" class="login-btn">Đăng nhập</a>
-            }
+                </div> *@
+            <div class="user-avatar">
+                <img src="~/image/icons8-account-48.png" alt="Avatar" class="user-avatar" />
+                <a asp-controller="User" asp-action="Login" class="login-btn">Đăng nhập</a>
+            </div>
+
+                
+            
+
+
         </div>
     </div>
 </header>

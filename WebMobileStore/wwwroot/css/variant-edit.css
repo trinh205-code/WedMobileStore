@@ -1,0 +1,399 @@
+﻿ Page Layout 
+.variant-list-page {
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.page-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+ Page Header 
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+}
+
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #0d6efd;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+    .btn-add:hover {
+        background: #0b5ed7;
+        color: white;
+    }
+
+ Info Card 
+.info-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.info-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #212529;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 1rem;
+    color: #212529;
+    font-weight: 600;
+}
+
+.badge-count {
+    display: inline-block;
+    background: #e7f3ff;
+    color: #0d6efd;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+ Table Card 
+.table-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.variant-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .variant-table thead th {
+        background: #f8f9fa;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+        font-size: 0.9rem;
+    }
+
+    .variant-table tbody td {
+        padding: 14px 12px;
+        border-bottom: 1px solid #f1f3f5;
+        vertical-align: middle;
+    }
+
+    .variant-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+.text-center {
+    text-align: center;
+}
+
+ Storage Badge 
+.badge-storage {
+    display: inline-block;
+    background: #e7f3ff;
+    color: #0d6efd;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+ Color Display 
+.color-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #dee2e6;
+}
+
+ Prices 
+.price-compare {
+    color: #6c757d;
+    text-decoration: line-through;
+    font-size: 0.9rem;
+}
+
+.price-sell {
+    color: #dc3545;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.text-muted {
+    color: #adb5bd;
+}
+
+ Quantity Badge 
+.badge-quantity {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+    .badge-quantity.in-stock {
+        background: #d1f4e0;
+        color: #198754;
+    }
+
+    .badge-quantity.out-of-stock {
+        background: #ffe5e5;
+        color: #dc3545;
+    }
+
+ Status Badge 
+.badge-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+    .badge-status.active {
+        background: #d1f4e0;
+        color: #198754;
+    }
+
+    .badge-status.inactive {
+        background: #f8d7da;
+        color: #dc3545;
+    }
+
+ Action Buttons 
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-action {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 6px;
+    transition: 0.2s ease-in-out;
+    border-radius: 4px;
+}
+
+.btn-edit svg {
+    width: 18px;
+    height: 18px;
+    color: #0d6efd;
+}
+
+.btn-edit:hover {
+    background: #e7f3ff;
+}
+
+.btn-delete svg {
+    width: 18px;
+    height: 18px;
+    color: #dc3545;
+}
+
+.btn-delete:hover {
+    background: #ffe5e5;
+}
+
+ Empty State 
+.empty-state {
+    text-align: center;
+    padding: 60px 20px !important;
+    color: #6c757d;
+}
+
+    .empty-state svg {
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+    }
+
+.btn-primary-sm {
+    display: inline-block;
+    background: #0d6efd;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+    .btn-primary-sm:hover {
+        background: #0b5ed7;
+        color: white;
+    }
+
+ Page Footer 
+.page-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: #495057;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s;
+}
+
+    .btn-back:hover {
+        background: #f8f9fa;
+        color: #212529;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+ Modal Styles - CRITICAL FOR POSITIONING 
+.modal {
+    z-index: 1055 !important;
+}
+
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+
+.modal-dialog-centered {
+    display: flex !important;
+    align-items: center !important;
+    min-height: calc(100% - 1rem) !important;
+    margin: 0.5rem auto !important;
+}
+
+.delete-modal {
+    border-radius: 12px;
+    border: none;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+    .delete-modal .modal-body {
+        padding: 2rem !important;
+    }
+
+    .delete-modal .btn {
+        min-width: 80px;
+        padding: 8px 20px;
+        border-radius: 6px;
+        border: none;
+        font-weight: 500;
+    }
+
+    .delete-modal .btn-secondary {
+        background-color: #6c757d;
+    }
+
+        .delete-modal .btn-secondary:hover {
+            background-color: #5c636a;
+        }
+
+    .delete-modal .btn-danger {
+        background-color: #dc3545;
+    }
+
+        .delete-modal .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+ Ensure modal appears correctly 
+body.modal-open {
+    overflow: hidden;
+}
+
+    body.modal-open .modal {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+ Alerts 
+.alert {
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+    .alert svg {
+        flex-shrink: 0;
+    }
+
+ Responsive 
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .variant-table {
+        font-size: 0.85rem;
+    }
+}

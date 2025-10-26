@@ -15,6 +15,7 @@ namespace WebMobileStore.Controllers
             db = context;
         }
 
+        
         // GET: /Shop
         [HttpGet("")]
         public IActionResult Index()

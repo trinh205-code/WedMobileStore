@@ -1,0 +1,58 @@
+﻿@model WebMobileStore.Models.Entity.Users
+@using WebMobileStore.Models.Entity.Enums
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/User.css" />
+}
+
+@{
+    ViewBag.Title = "Chỉnh sửa khách hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="admin-user-edit-wrapper">
+<div class="admin-user-edit-container">
+    <h2 class="admin-user-edit-title">Chỉnh sửa thông tin khách hàng</h2>
+
+    <div class="admin-user-edit-card">
+        <form asp-controller="Admin" asp-action="EditUser" asp-route-id="@Model.UserId" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="UserId" />
+
+            <div class="admin-user-edit-group">
+                <label asp-for="FullName" class="admin-user-edit-label">Họ và tên *</label>
+                <input asp-for="FullName" class="admin-user-edit-input" required />
+                <span asp-validation-for="FullName" class="admin-user-edit-error"></span>
+            </div>
+
+            <div class="admin-user-edit-group">
+                <label asp-for="Phone" class="admin-user-edit-label">Số điện thoại</label>
+                <input asp-for="Phone" class="admin-user-edit-input" />
+                <span asp-validation-for="Phone" class="admin-user-edit-error"></span>
+            </div>
+
+
+
+            <div class="admin-user-edit-group">
+                <label asp-for="role" class="admin-user-edit-label">Quyền *</label>
+                <select asp-for="role" asp-items="Html.GetEnumSelectList<Role>()" class="admin-user-edit-select"></select>
+                <span asp-validation-for="role" class="admin-user-edit-error"></span>
+            </div>
+
+            
+
+            <div class="admin-user-edit-actions">
+                <button type="submit" class="admin-user-edit-submit">Lưu thay đổi</button>
+                <a asp-controller="Admin" asp-action="Customers" class="admin-user-edit-cancel">✖ Hủy</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

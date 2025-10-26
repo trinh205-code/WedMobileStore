@@ -26,7 +26,7 @@
         <h2>🌟 Gợi ý cho bạn</h2>
         <a asp-controller="Shop" asp-action="Index" class="view-all">Xem tất cả →</a>
     </div>
-    @await Html.PartialAsync("_ProductGrid", Model.RecommendedProducts)
+    @await Html.PartialAsync("GoiY", Model.RecommendedProducts)
 </div>
 
 <!-- New Arrivals Section -->
@@ -35,7 +35,7 @@
         <h2>🎉 Sản phẩm mới về</h2>
         <a asp-controller="Shop" asp-action="NewArrivals" class="view-all">Xem tất cả →</a>
     </div>
-    @await Html.PartialAsync("_ProductGrid", Model.NewProducts)
+    @await Html.PartialAsync("ProductsCartNew", Model.NewProducts)
 </div>
 
 <!-- Top Selling Section -->

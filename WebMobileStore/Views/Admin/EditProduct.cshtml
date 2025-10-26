@@ -1,0 +1,82 @@
+﻿
+@model WebMobileStore.Models.Entity.Products
+
+@{
+    ViewBag.Title = "Chỉnh sửa sản phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content">
+    <h2 class="page-title">Chỉnh sửa sản phẩm</h2>
+
+    <div class="form-card">
+        <form asp-controller="Admin" asp-action="EditProduct" asp-route-id="@Model.ProductId" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="ProductId" />
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="ProductsName">Tên sản phẩm *</label>
+                    <input asp-for="ProductsName" class="form-input" />
+                    <span asp-validation-for="ProductsName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CategoryId">Danh mục *</label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                        <option value="">-- Chọn danh mục --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BrandId">Hãng *</label>
+                    <select asp-for="BrandId" asp-items="ViewBag.Brands" class="form-select">
+                        <option value="">-- Chọn hãng --</option>
+                    </select>
+                    <span asp-validation-for="BrandId" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Price">Giá bán *</label>
+                    <input asp-for="Price" class="form-input" type="number" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Quantity">Số lượng *</label>
+                    <input asp-for="Quantity" class="form-input" type="number" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description">Mô tả</label>
+                <textarea asp-for="Description" class="form-textarea"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="ImageUrls" class="form-label">Danh sách ảnh sản phẩm</label>
+
+                <textarea name="ImageUrls" class="form-textarea" rows="4"
+                          placeholder="Mỗi link ảnh 1 dòng">@string.Join("\n", Model.ProductImages.Select(p => p.ImageUrl))</textarea>
+
+                <small class="text-muted">
+                    📌 Nhập mỗi link ảnh một dòng
+                </small>
+            </div>
+
+
+            <div class="form-group">
+                <button type="submit" class="submit-btn">💾 Lưu thay đổi</button>
+                <a asp-controller="Admin" asp-action="Products" class="cancel-btn">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

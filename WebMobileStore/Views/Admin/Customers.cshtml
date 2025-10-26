@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<WebMobileStore.Models.Entity.Users>
+@using WebMobileStore.Models.Entity.Enums
 
 @{
     ViewBag.Title = "Quản lý khách hàng";
@@ -19,11 +20,13 @@
                         <th>Email</th>
                         <th>Số ĐT</th>
                         <th>Địa chỉ</th>
+                        <th>Quyền</th> 
                         <th>Tổng đơn</th>
                         <th>Ngày tham gia</th>
                         <th>Thao tác</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @foreach (var user in Model)
                     {
@@ -42,14 +45,37 @@
                                     <span class="text-muted">Chưa có</span>
                                 }
                             </td>
+
+                            <td>
+                                @if (user.role == Role.Admin)
+                                {
+                                    <span >Admin</span>
+                                }
+                                else
+                                {
+                                    <span >Khách</span>
+                                }
+                            </td>
+
                             <td>@(user.Orders?.Count() ?? 0)</td>
                             <td>@user.CreatedAt.ToString("dd/MM/yyyy")</td>
+
                             <td>
-                                <button class="action-btn">Chi tiết</button>
+                                <a asp-controller="Admin" asp-action="EditUser" asp-route-id="@user.UserId"
+                                   class="action-btn edit">Sửa</a>
+
+                                <form asp-controller="Admin" asp-action="SetAdmin"
+                                      asp-route-id="@user.UserId" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="action-btn admin-btn">
+                                        Cấp quyền Admin
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }
                 </tbody>
+
             </table>
         }
         else

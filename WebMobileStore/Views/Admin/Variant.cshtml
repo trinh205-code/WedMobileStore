@@ -1,0 +1,206 @@
+﻿@model IEnumerable<WebMobileStore.Models.Entity.ProductVariant>
+@section Styles {
+    <link rel="stylesheet" href="~/css/variant.css" asp-append-version="true" />
+}
+@{
+    ViewData["Title"] = "Danh sách biến thể";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-content">
+    <div class="page-header">
+        <h2 class="page-title">Danh sách biến thể sản phẩm</h2>
+        <a asp-action="AddProductVariant"
+           asp-controller="Admin"
+           asp-route-id="@ViewBag.ProductId"
+           class="btn-add">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+            </svg>
+            Thêm biến thể mới
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+            </svg>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+            </svg>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="info-card">
+        <h3 class="info-title">Thông tin sản phẩm</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Sản phẩm:</span>
+                <span class="info-value">@ViewBag.ProductName</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Danh mục:</span>
+                <span class="info-value">@ViewBag.CategoryName</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Hãng:</span>
+                <span class="info-value">@ViewBag.BrandName</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Tổng biến thể:</span>
+                <span class="info-value badge-count">@(Model?.Count() ?? 0)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="variant-table">
+                <thead>
+                    <tr>
+                        <th width="60">#</th>
+                        <th>Dung lượng</th>
+                        <th>Màu sắc</th>
+                        <th>Giá gốc</th>
+                        <th>Giá bán</th>
+                        <th>Số lượng</th>
+                        <th>Trạng thái</th>
+                        <th width="180">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        int index = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@index</td>
+                                <td>
+                                    <span class="badge-storage">@item.Storage</span>
+                                </td>
+                                <td>
+                                    <div class="color-display">
+                                        <span class="color-dot" style="background: @GetColorCode(item.Color);"></span>
+                                        <span>@item.Color</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (item.CompareAtPrice > 0)
+                                    {
+                                        <span class="price-compare">@string.Format("{0:N0}đ", item.CompareAtPrice)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="price-sell">@string.Format("{0:N0}đ", item.Price)</span>
+                                </td>
+                                <td>
+                                    <span class="badge-quantity @(item.Quantity > 0 ? "in-stock" : "out-of-stock")">
+                                        @item.Quantity
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge-status active">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status inactive">Ngừng bán</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-controller="Admin"
+                                           asp-action="EditVariant"
+                                           asp-route-id="@item.ProductVariantId"
+                                           class="btn-action btn-edit"
+                                           title="Chỉnh sửa">
+                                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                            </svg>
+                                        </a>
+                                      
+
+                                        <form asp-controller="Admin" asp-action="DeleteVariant" asp-route-id="@item.ProductVariantId" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="action-btn delete" title="Xóa">
+                                                <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z" />
+                                </svg>
+                                <p>Chưa có biến thể nào!</p>
+                                <a asp-action="AddProductVariant"
+                                   asp-controller="Admin"
+                                   asp-route-id="@ViewBag.ProductId"
+                                   class="btn-primary-sm">
+                                    Thêm biến thể đầu tiên
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="page-footer">
+        <a asp-action="Products" asp-controller="Admin" class="btn-back">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+            </svg>
+            Quay lại danh sách sản phẩm
+        </a>
+    </div>
+</div>
+
+@functions {
+    string GetColorCode(string colorName)
+    {
+        return colorName switch
+        {
+            "Đen" => "#000000",
+            "Trắng" => "#FFFFFF",
+            "Vàng" => "#FFD700",
+            "Xanh Dương" => "#1E90FF",
+            "Xanh Lá" => "#32CD32",
+            "Đỏ" => "#DC143C",
+            "Tím" => "#9370DB",
+            "Bạc" => "#C0C0C0",
+            "Hồng" => "#FF69B4",
+            _ => "#808080"
+        };
+    }
+}

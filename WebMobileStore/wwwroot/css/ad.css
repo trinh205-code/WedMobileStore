@@ -364,7 +364,7 @@ tbody tr:hover {
     background: #f8f9fa;
 }
 
-.status-badge {
+/*.status-badge {
     padding: 5px 12px;
     border-radius: 20px;
     font-size: 12px;
@@ -385,6 +385,28 @@ tbody tr:hover {
     .status-badge.warning {
         background: #fff3cd;
         color: #856404;
+    }*/
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    min-width: 80px;
+}
+
+    .status-badge.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-badge.danger {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
     }
 
 /* Buttons */
@@ -410,7 +432,8 @@ tbody tr:hover {
     }
 
 .action-btn {
-    padding: 6px 12px;
+    /*    padding: 6px 12px; */
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     font-size: 13px;
@@ -418,6 +441,8 @@ tbody tr:hover {
     transition: all 0.3s;
     margin-right: 5px;
 }
+
+
 
     .action-btn.edit {
         background: #17a2b8;
@@ -637,5 +662,7 @@ tbody tr:hover {
         padding: 10px;
     }
 }
+
+
 
 
