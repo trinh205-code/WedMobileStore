@@ -73,10 +73,6 @@ namespace WebMobileStore.Controllers
 
 
 
-
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Add(Categories category)

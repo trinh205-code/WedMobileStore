@@ -1,13 +1,26 @@
-﻿@model List<WebMobileStore.Models.Entity.Products>
+﻿@model WebMobileStore.ViewModels.HomeViewModel
 @{
     Layout = "_ShopLayout";
     ViewBag.Title = ViewBag.CategoryName;
 }
 
+<!-- Categories -->
+@* @await Html.PartialAsync("_Categories", Model.Categories) *@
+
+<!-- Flash Sale Section -->
 <div class="section">
     <div class="section-header">
-        <h2>@ViewBag.CategoryName</h2>
+        <h2>⚡ Flash Sale</h2>
+        <div class="flash-sale-timer">Kết thúc sau: <span id="flashSaleCountdown">02:45:30</span></div>
     </div>
+    @await Html.PartialAsync("_ProductGrid", Model.FlashSaleProducts)
+</div>
 
-    @await Html.PartialAsync("_ProductGrid", Model)
+<!-- Recommended Section -->
+<div class="section">
+    <div class="section-header">
+        <h2>🌟 Gợi ý cho bạn</h2>
+        <a asp-controller="Shop" asp-action="Index" class="view-all">Xem tất cả →</a>
+    </div>
+    @await Html.PartialAsync("GoiY", Model.RecommendedProducts)
 </div>

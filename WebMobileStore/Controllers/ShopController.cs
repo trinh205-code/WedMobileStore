@@ -6,7 +6,7 @@ using WebMobileStore.ViewModels;
 
 namespace WebMobileStore.Controllers
 {
-    [Route("Shop")]
+    [Route("/")]
     public class ShopController : Controller
     {
         private readonly MobileStoreContext db;
@@ -80,18 +80,52 @@ namespace WebMobileStore.Controllers
             var category = db.Categories.Find(id);
             if (category == null) return NotFound();
 
-            var products = db.Products
-                .Include(p => p.ProductImages)
-                .Include(p => p.ProductVariants)
-                .Include(p => p.Brand)
-                .Where(p => p.IsActive && p.CategoryId == id)
-                .OrderByDescending(p => p.CreatedAt)
-                .ToList();
+            var viewModel = new HomeViewModel
+            {
+                Categories = db.Categories.ToList(),
 
-            ViewBag.Title = category.CategoryName;
+                FlashSaleProducts = db.Products
+                    .Include(p => p.ProductImages)
+                    .Include(p => p.ProductVariants)
+                    .Where(p => p.IsActive)
+                    .OrderBy(p => Guid.NewGuid())
+                    .Take(8)
+                    .ToList(),
+
+                RecommendedProducts = db.Products
+                    .Include(p => p.ProductImages)
+                    .Include(p => p.ProductVariants)
+                    .Where(p => p.IsActive)
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(12)
+                    .ToList(),
+
+                NewProducts = db.Products
+                    .Include(p => p.ProductImages)
+                    .Include(p => p.ProductVariants)
+                    .Where(p => p.IsActive)
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(8)
+                    .ToList(),
+
+                TopSellingProducts = db.Products
+                    .Include(p => p.ProductImages)
+                    .Include(p => p.ProductVariants)
+                    .Where(p => p.IsActive)
+                    .OrderBy(p => Guid.NewGuid())
+                    .Take(8)
+                    .ToList()
+            };
+
+            // ⚠ Nhưng thiếu danh sách sản phẩm theo category
+            // Nếu bạn muốn hiển thị riêng section "Sản phẩm theo danh mục"
+            // thì cần thêm một property mới vào ViewModel
             ViewBag.CategoryName = category.CategoryName;
-            return View("Category", products);
+
+            return View("Category", viewModel);
         }
+
+
 
         // GET: /Shop/ProductDetail/1
         [HttpGet("ProductDetail/{id}")]

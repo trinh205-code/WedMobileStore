@@ -6,41 +6,30 @@
 }
 
 <!-- Banner -->
-<div class="banner">
-    <h1>🔥 FLASH SALE CUỐI TUẦN</h1>
-    <p>Giảm giá đến 50% - Miễn phí vận chuyển toàn quốc</p>
-</div>
+@await Html.PartialAsync("_Banner", "flash-sale")
 
 <!-- Categories -->
+@await Html.PartialAsync("_Categories", Model.Categories)
+
+<!-- Flash Sale Section -->
 <div class="section">
-    <div class="categories">
-        <div class="category-card">
-            <div class="category-icon">📱</div>
-            <div>Điện thoại</div>
-        </div>
-        <div class="category-card">
-            <div class="category-icon">💻</div>
-            <div>Laptop</div>
-        </div>
-        <div class="category-card">
-            <div class="category-icon">🎧</div>
-            <div>Tai nghe</div>
-        </div>
-        <div class="category-card">
-            <div class="category-icon">⌚</div>
-            <div>Smartwatch</div>
-        </div>
-        <div class="category-card">
-            <div class="category-icon">📷</div>
-            <div>Camera</div>
-        </div>
-        <div class="category-card">
-            <div class="category-icon">🖱️</div>
-            <div>Chuột</div>
-        </div>
+    <div class="section-header">
+        <h2>⚡ Flash Sale</h2>
+        <div class="flash-sale-timer">Kết thúc sau: <span id="flashSaleCountdown">02:45:30</span></div>
     </div>
+    @await Html.PartialAsync("_ProductGrid", Model.FlashSaleProducts)
 </div>
 
+<!-- Recommended Section -->
+<div class="section">
+    <div class="section-header">
+        <h2>🌟 Gợi ý cho bạn</h2>
+        <a asp-controller="Shop" asp-action="Index" class="view-all">Xem tất cả →</a>
+    </div>
+    @await Html.PartialAsync("GoiY", Model.RecommendedProducts)
+</div>
+
+<!-- New Arrivals Section -->
 <div class="section">
     <div class="section-header">
         <h2>🎉 Sản phẩm mới về</h2>
@@ -57,3 +46,32 @@
     </div>
     @await Html.PartialAsync("_ProductGrid", Model.TopSellingProducts)
 </div>
+
+@section Scripts {
+    <script>
+        // Flash sale countdown
+        function startCountdown(elementId, duration) {
+            let timer = duration;
+            const element = document.getElementById(elementId);
+
+            setInterval(function () {
+                const hours = Math.floor(timer / 3600);
+                const minutes = Math.floor((timer % 3600) / 60);
+                const seconds = timer % 60;
+
+                element.textContent =
+                    String(hours).padStart(2, '0') + ':' +
+                    String(minutes).padStart(2, '0') + ':' +
+                    String(seconds).padStart(2, '0');
+
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000);
+        }
+
+        // Start countdown (2 hours 45 minutes 30 seconds)
+        startCountdown('flashSaleCountdown', 2 * 3600 + 45 * 60 + 30);
+    </script>
+}
+;
