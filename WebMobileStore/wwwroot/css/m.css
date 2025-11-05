@@ -568,9 +568,12 @@ nav {
 .product-price {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 12px;
     flex-wrap: wrap;
+    color: #d92d20;
+    font-size: 22px;
+    font-weight: bold
 }
 
 .price-current {
