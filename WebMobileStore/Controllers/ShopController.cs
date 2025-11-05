@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebMobileStore.Models.Data;
 using WebMobileStore.Models.Entity;
+using WebMobileStore.ViewModels;
 
 namespace WebMobileStore.Controllers
 {
@@ -15,24 +16,61 @@ namespace WebMobileStore.Controllers
             db = context;
         }
 
-        
-        // GET: /Shop
+
+
         [HttpGet("")]
+        [HttpGet("Index")]
         public IActionResult Index()
         {
-            
-            var products = db.Products
-                .Include(p => p.ProductImages)
-                .Include(p => p.ProductVariants)
-                .Include(p => p.Brand )
-                .Where(p => p.IsActive)
-                .OrderByDescending(p => p.CreatedAt)
-                .ToList();
+            try
+            {
+                var viewModel = new HomeViewModel
+                {
+                    Categories = db.Categories
+                        .Include(c => c.Brands)
+                        .Take(8)
+                        .ToList(),
 
-            
+                    FlashSaleProducts = db.Products
+                        .Include(p => p.ProductImages)
+                        .Include(p => p.ProductVariants)
+                        .Where(p => p.IsActive)
+                        .OrderBy(p => Guid.NewGuid())
+                        .Take(8)
+                        .ToList(),
 
-            ViewBag.Title = "Tất cả sản phẩm";
-            return View(products);
+                    RecommendedProducts = db.Products
+                        .Include(p => p.ProductImages)
+                        .Include(p => p.ProductVariants)
+                        .Where(p => p.IsActive)
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Take(12)
+                        .ToList(),
+
+                    NewProducts = db.Products
+                        .Include(p => p.ProductImages)
+                        .Include(p => p.ProductVariants)
+                        .Where(p => p.IsActive)
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Take(8)
+                        .ToList(),
+
+                    TopSellingProducts = db.Products
+                        .Include(p => p.ProductImages)
+                        .Include(p => p.ProductVariants)
+                        .Where(p => p.IsActive)
+                        .OrderBy(p => Guid.NewGuid())
+                        .Take(8)
+                        .ToList()
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Không thể tải dữ liệu: " + ex.Message;
+                return View(new HomeViewModel());
+            }
         }
 
         // GET: /Shop/Category/1
@@ -52,7 +90,7 @@ namespace WebMobileStore.Controllers
 
             ViewBag.Title = category.CategoryName;
             ViewBag.CategoryName = category.CategoryName;
-            return View("Index", products);
+            return View("Category", products);
         }
 
         // GET: /Shop/ProductDetail/1

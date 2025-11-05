@@ -4,6 +4,10 @@
     ViewBag.Title = "Quản lý thương hiệu";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+@section Styles {
+    <link rel="stylesheet" href="~/css/brand.css" />
+}
+
 
 <div class="page-content">
     @Html.AntiForgeryToken()
@@ -14,6 +18,29 @@
             ➕ Thêm thương hiệu
         </a>
     </div>
+
+    <div class="filter-bar">
+        <form method="get" class="brand-filter-bar">
+            <input type="text" name="searchTerm" placeholder="Tìm thương hiệu..."
+                   value="@Context.Request.Query["searchTerm"]" class="brand-filter-search" />
+
+            <select name="categoryId" class="brand-filter-select">
+                <option value="">-- Tất cả danh mục --</option>
+                @foreach (var c in (IEnumerable<WebMobileStore.Models.Entity.Categories>)ViewBag.Categories)
+                {
+                    <option value="@c.CategoryId"
+                            selected="@(Context.Request.Query["categoryId"] == c.CategoryId.ToString() ? "selected" : null)">
+                        @c.CategoryName
+                    </option>
+
+                }
+            </select>
+
+            <button type="submit" class="brand-filter-btn">Tìm kiếm</button>
+        </form>
+
+    </div>
+
 
     <div class="table-card">
         @if (Model != null && Model.Any())
@@ -66,6 +93,37 @@
             </div>
         }
     </div>
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="pagination-container">
+            <ul class="pagination">
+
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <li>
+                        <a href="@Url.Action("Brands", new { page = ViewBag.CurrentPage - 1 })">« Trước</a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="@(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a href="@Url.Action("Brands", new { page = i })">@i</a>
+                    </li>
+                }
+
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <li>
+                        <a href="@Url.Action("Brands", new { page = ViewBag.CurrentPage + 1 })">Sau »</a>
+                    </li>
+                }
+
+            </ul>
+        </div>
+    }
+
 </div>
 
 <script>

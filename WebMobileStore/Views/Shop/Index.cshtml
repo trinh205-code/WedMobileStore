@@ -1,4 +1,6 @@
-﻿@{
+﻿@model WebMobileStore.ViewModels.HomeViewModel
+
+@{
     ViewBag.Title = "Trang chủ";
     Layout = "_ShopLayout";
 }
@@ -39,19 +41,19 @@
     </div>
 </div>
 
-<!-- Flash Sale Section -->
 <div class="section">
     <div class="section-header">
-        <h2>⚡ Flash Sale</h2>
-        <div class="flash-sale-timer">Kết thúc sau: 02:45:30</div>
+        <h2>🎉 Sản phẩm mới về</h2>
+        <a asp-controller="Shop" asp-action="NewArrivals" class="view-all">Xem tất cả →</a>
     </div>
-    <div class="product-grid" id="productsContainer"></div>
+    @await Html.PartialAsync("ProductsCartNew", Model.NewProducts)
 </div>
 
-<!-- Recommended Section -->
+<!-- Top Selling Section -->
 <div class="section">
     <div class="section-header">
-        <h2>🌟 Gợi ý cho bạn</h2>
+        <h2>🔥 Bán chạy nhất</h2>
+        <a asp-controller="Shop" asp-action="BestSellers" class="view-all">Xem tất cả →</a>
     </div>
-    <div class="product-grid" id="recommendedContainer"></div>
+    @await Html.PartialAsync("_ProductGrid", Model.TopSellingProducts)
 </div>

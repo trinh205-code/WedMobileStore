@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using WebMobileStore.Models.Data;
 using WebMobileStore.Models.Entity;
 using WebMobileStore.Models.Entity.Enums;
+using WebMobileStore.ViewModels;
 
 namespace WebMobileStore.Controllers
 {
@@ -30,21 +31,51 @@ namespace WebMobileStore.Controllers
                 ViewBag.TotalUsers = db.Users?.Count() ?? 0;
                 ViewBag.TotalProducts = db.Products?.Count() ?? 0;
                 ViewBag.TotalOrders = db.Orders?.Count() ?? 0;
-                ViewBag.TotalRevenue = db.Orders?.Sum(o => (decimal?)o.TotalAmount) ?? 0;
+                ViewBag.TotalRevenue = db.Orders?.Sum(o => (double?)o.TotalAmount) ?? 0;
+
+                ViewBag.TopBrands = db.Products?
+                    .Where(p => p.Brand != null)
+                    .GroupBy(p => p.Brand.BrandName)
+                    .Select(g => new { Brand = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .Take(5)
+                    .ToList();
+
+                ViewBag.HotProducts = db.OrderDetails?
+                    .GroupBy(od => od.ProductName)
+                    .Select(g => new { Product = g.Key, Quantity = g.Sum(x => x.Quantity) })
+                    .OrderByDescending(x => x.Quantity)
+                    .Take(5)
+                    .ToList();
+
+                ViewBag.RecentOrders = db.Orders?
+                    .Include(o => o.User)
+                    .OrderByDescending(o => o.OrderdAt)
+                    .Take(5)
+                    .Select(o => new
+                    {
+                        OrderId = o.OrdersId,
+                        Customer = o.User != null ? o.User.FullName : "Khách lẻ",
+                        Date = o.OrderdAt,
+                        Amount = o.TotalAmount
+                    })
+                    .ToList();
 
                 return View();
             }
-            catch (Exception ex)
+            catch
             {
-                ViewBag.Error = "Không thể tải dữ liệu dashboard: " + ex.Message;
-                ViewBag.TotalUsers = 0;
-                ViewBag.TotalProducts = 0;
-                ViewBag.TotalOrders = 0;
-                ViewBag.TotalRevenue = 0;
-
                 return View();
             }
         }
+
+
+
+
+
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -60,36 +91,47 @@ namespace WebMobileStore.Controllers
         }
 
 
-        // Products - Danh sách sản phẩm
         [HttpGet("Products")]
-        public IActionResult Products(string searchTerm, long? categoryId, long? brandId)
+        public IActionResult Products(string searchTerm, long? categoryId, long? brandId, int page = 1, int pageSize = 5)
         {
             var products = db.Products.AsQueryable();
+
             if (!string.IsNullOrEmpty(searchTerm))
-            {
                 products = products.Where(p => p.ProductsName.Contains(searchTerm));
-            }
 
             if (categoryId.HasValue)
-            {
                 products = products.Where(p => p.CategoryId == categoryId.Value);
-            }
 
             if (brandId.HasValue)
-            {
                 products = products.Where(p => p.BrandId == brandId.Value);
-            }
 
             products = products
-                       .Include(p => p.ProductImages) 
-                       .Include(p => p.Brand)
-                       .Include(p => p.Category);
+                .Include(p => p.ProductImages)
+                .Include(p => p.Brand)
+                .Include(p => p.Category);
+
+            int totalItems = products.Count();       
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            var pagedProducts = products
+                .OrderByDescending(p => p.ProductId)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             ViewBag.Categories = db.Categories.ToList();
             ViewBag.Brands = db.Brands.ToList();
 
-            return View(products.ToList());
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SelectedCategory = categoryId;
+            ViewBag.SelectedBrand = brandId;
+
+            return View(pagedProducts);
         }
+
 
 
 
@@ -629,13 +671,42 @@ namespace WebMobileStore.Controllers
 
 
         [HttpGet("Brands")]
-        public IActionResult Brands()
+        public IActionResult Brands(string search, long? categoryId, int page = 1, int pageSize = 5)
         {
-            var brands = db.Brands.Include(b => b.Category).ToList(); 
+            var query = db.Brands
+                          .Include(b => b.Products)
+                          .Include(b => b.Category)
+                          .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.BrandName.Contains(search));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(x => x.CategoryId == categoryId);
+            }
+
+            int totalItems = query.Count();
+            var brands = query
+                .OrderByDescending(x => x.BrandId)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.Categories = db.Categories.ToList();
+            ViewBag.Search = search;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
             return View(brands);
         }
 
-        
+
+
+
 
         [HttpGet("AddBrand")]
         public IActionResult AddBrand()

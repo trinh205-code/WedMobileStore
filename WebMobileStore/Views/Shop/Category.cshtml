@@ -1,0 +1,13 @@
+﻿@model List<WebMobileStore.Models.Entity.Products>
+@{
+    Layout = "_ShopLayout";
+    ViewBag.Title = ViewBag.CategoryName;
+}
+
+<div class="section">
+    <div class="section-header">
+        <h2>@ViewBag.CategoryName</h2>
+    </div>
+
+    @await Html.PartialAsync("_ProductGrid", Model)
+</div>

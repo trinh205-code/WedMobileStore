@@ -2,100 +2,85 @@
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboar.css" />
+}
 
-<div class="page-content">
+
+<div class="dashboard">
+
     <h2 class="page-title">Dashboard</h2>
 
     <!-- Stats Cards -->
     <div class="stats-grid">
         <div class="stat-card purple">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-title">Người dùng</div>
-                    <div class="stat-value">@(ViewBag.TotalUsers ?? 0)</div>
-                </div>
-                <div class="stat-change up">+12.4% ↑</div>
-            </div>
-            <svg class="mini-chart" viewBox="0 0 200 60">
-                <polyline points="0,40 40,35 80,30 120,45 160,25 200,50"
-                          fill="none" stroke="#5856d6" stroke-width="2" />
-            </svg>
+            <div class="stat-title">Người dùng</div>
+            <div class="stat-value">@ViewBag.TotalUsers</div>
         </div>
 
         <div class="stat-card blue">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-title">Sản phẩm</div>
-                    <div class="stat-value">@(ViewBag.TotalProducts ?? 0)</div>
-                </div>
-                <div class="stat-change up">+5% ↑</div>
-            </div>
-            <svg class="mini-chart" viewBox="0 0 200 60">
-                <polyline points="0,50 40,45 80,35 120,40 160,20 200,25"
-                          fill="none" stroke="#2eb85c" stroke-width="2" />
-            </svg>
+            <div class="stat-title">Sản phẩm</div>
+            <div class="stat-value">@ViewBag.TotalProducts</div>
         </div>
 
         <div class="stat-card orange">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-title">Đơn hàng</div>
-                    <div class="stat-value">@(ViewBag.TotalOrders ?? 0)</div>
-                </div>
-                <div class="stat-change up">+8.7% ↑</div>
-            </div>
-            <svg class="mini-chart" viewBox="0 0 200 60">
-                <path d="M0,45 Q50,35 100,40 T200,30"
-                      fill="none" stroke="#f9b115" stroke-width="2" />
-            </svg>
+            <div class="stat-title">Đơn hàng</div>
+            <div class="stat-value">@ViewBag.TotalOrders</div>
         </div>
 
         <div class="stat-card red">
-            <div class="stat-header">
-                <div>
-                    <div class="stat-title">Doanh thu</div>
-                    <div class="stat-value">@((ViewBag.TotalRevenue ?? 0).ToString("N0"))₫</div>
-                </div>
-                <div class="stat-change up">+23.6% ↑</div>
-            </div>
-            <div class="mini-chart" style="display: flex; align-items: flex-end; gap: 4px; height: 60px;">
-                <div style="flex: 1; background: #e55353; height: 70%;"></div>
-                <div style="flex: 1; background: #e55353; height: 85%;"></div>
-                <div style="flex: 1; background: #e55353; height: 60%;"></div>
-                <div style="flex: 1; background: #e55353; height: 90%;"></div>
-                <div style="flex: 1; background: #e55353; height: 75%;"></div>
-                <div style="flex: 1; background: #e55353; height: 95%;"></div>
-                <div style="flex: 1; background: #e55353; height: 80%;"></div>
-            </div>
+            <div class="stat-title">Doanh thu</div>
+            <div class="stat-value">@((ViewBag.TotalRevenue ?? 0).ToString("N0"))₫</div>
         </div>
     </div>
 
-    <!-- Traffic Chart -->
-    <div class="chart-card">
-        <div class="chart-header">
-            <div>
-                <div class="chart-title">Biểu đồ doanh thu</div>
-                <div class="chart-subtitle">Tháng 1 - Tháng 7 2024</div>
-            </div>
-            <div class="time-filter">
-                <button class="filter-btn active">Ngày</button>
-                <button class="filter-btn">Tháng</button>
-                <button class="filter-btn">Năm</button>
-            </div>
+    <!-- Brand + Product Lists -->
+    <div class="grid-2">
+        <div class="card">
+            <h3>Thương hiệu bán chạy</h3>
+            <ul class="list">
+                @foreach (var b in ViewBag.TopBrands)
+                {
+                    <li><span>@b.Brand</span><span>@b.Count sản phẩm</span></li>
+                }
+            </ul>
         </div>
 
-        <div class="chart-canvas">
-            <svg width="100%" height="100%" viewBox="0 0 1000 300">
-                <line x1="0" y1="50" x2="1000" y2="50" stroke="#e4e7eb" stroke-width="1" />
-                <line x1="0" y1="125" x2="1000" y2="125" stroke="#e4e7eb" stroke-width="1" />
-                <line x1="0" y1="200" x2="1000" y2="200" stroke="#e4e7eb" stroke-width="1" />
-                <line x1="0" y1="275" x2="1000" y2="275" stroke="#e4e7eb" stroke-width="1" />
-
-                <path d="M50,70 Q150,250 250,200 T450,50 T650,100 T850,180 T950,240"
-                      fill="none" stroke="#2eb85c" stroke-width="3" />
-                <path d="M50,50 Q150,120 250,280 T450,90 T650,80 T850,150 T950,250"
-                      fill="none" stroke="#5856d6" stroke-width="3" />
-            </svg>
+        <div class="card">
+            <h3>Sản phẩm hot nhất</h3>
+            <ul class="list">
+                @foreach (var p in ViewBag.HotProducts)
+                {
+                    <li><span>@p.Product</span><span>@p.Quantity lượt mua</span></li>
+                }
+            </ul>
         </div>
     </div>
+
+    <!-- Recent Orders -->
+    <div class="card mt-20">
+        <h3>Đơn hàng gần đây</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in ViewBag.RecentOrders)
+                {
+                    <tr>
+                        <td>#@o.OrderId</td>
+                        <td>@o.Customer</td>
+                        <td>@o.Date.ToString("dd/MM/yyyy")</td>
+                        <td>@o.Amount.ToString("N0") ₫</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
 </div>

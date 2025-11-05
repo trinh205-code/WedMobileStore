@@ -665,4 +665,91 @@ tbody tr:hover {
 
 
 
+--//////////////
+
+.extra-section {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+    .extra-section .card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .extra-section .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+    .extra-section h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .extra-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .extra-section ul li {
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 15px;
+        }
+
+            .extra-section ul li:last-child {
+                border-bottom: none;
+            }
+
+    /* Table for recent orders */
+    .extra-section table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+        .extra-section table th {
+            text-align: left;
+            padding: 8px;
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .extra-section table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .extra-section table tr:last-child td {
+            border-bottom: none;
+        }
+
+/* Responsive - mobile */
+@media (max-width: 992px) {
+    .extra-section {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .extra-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+////////////////////////////////////////////
+
+
 

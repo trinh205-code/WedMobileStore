@@ -140,5 +140,56 @@
                 <a asp-controller="Admin" asp-action="AddProduct" class="btn-primary">Thêm sản phẩm đầu tiên</a>
             </div>
         }
+
+
     </div>
+    @if (ViewBag.TotalPages > 1)
+{
+    <div class="pagination-container">
+        <ul class="pagination">
+
+            @* Nút trang trước *@
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li>
+                    <a href="@Url.Action("Products", new { 
+                        page = ViewBag.CurrentPage - 1, 
+                        searchTerm = ViewBag.SearchTerm, 
+                        categoryId = ViewBag.SelectedCategory, 
+                        brandId = ViewBag.SelectedBrand 
+                    })">« Trước</a>
+                </li>
+            }
+
+            @* Số trang *@
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="@(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a href="@Url.Action("Products", new { 
+                        page = i, 
+                        searchTerm = ViewBag.SearchTerm, 
+                        categoryId = ViewBag.SelectedCategory, 
+                        brandId = ViewBag.SelectedBrand 
+                    })">@i</a>
+                </li>
+            }
+
+            @* Nút trang sau *@
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li>
+                    <a href="@Url.Action("Products", new { 
+                        page = ViewBag.CurrentPage + 1, 
+                        searchTerm = ViewBag.SearchTerm, 
+                        categoryId = ViewBag.SelectedCategory, 
+                        brandId = ViewBag.SelectedBrand 
+                    })">Sau »</a>
+                </li>
+            }
+
+        </ul>
+    </div>
+    }
+
 </div>
+
