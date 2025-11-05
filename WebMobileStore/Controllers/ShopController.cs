@@ -22,6 +22,10 @@ namespace WebMobileStore.Controllers
         [HttpGet("Index")]
         public IActionResult Index()
         {
+            // Lấy UserId nếu đã đăng nhập
+            string userIdClaim = User.FindFirst("UserId")?.Value;
+            long? userId = userIdClaim != null ? long.Parse(userIdClaim) : (long?)null;
+
             try
             {
                 var viewModel = new HomeViewModel
@@ -61,17 +65,34 @@ namespace WebMobileStore.Controllers
                         .Where(p => p.IsActive)
                         .OrderBy(p => Guid.NewGuid())
                         .Take(8)
-                        .ToList()
+                        .ToList(),
+
                 };
+
+                if (userId != null)
+                {
+                    var cart = db.Carts
+                                 .Include(c => c.Items)
+                                 .FirstOrDefault(c => c.UserId == userId);
+
+                    ViewBag.CartCount = cart?.Items?.Sum(ci => ci.Quantity) ?? 0;
+                }
+                else
+                {
+                    ViewBag.CartCount = 0;
+                }
 
                 return View(viewModel);
             }
             catch (Exception ex)
             {
                 ViewBag.Error = "Không thể tải dữ liệu: " + ex.Message;
+                ViewBag.CartCount = 0;
                 return View(new HomeViewModel());
             }
         }
+
+
 
         // GET: /Shop/Category/1
         [HttpGet("Category/{id}")]
@@ -117,14 +138,13 @@ namespace WebMobileStore.Controllers
                     .ToList()
             };
 
-            // ⚠ Nhưng thiếu danh sách sản phẩm theo category
-            // Nếu bạn muốn hiển thị riêng section "Sản phẩm theo danh mục"
-            // thì cần thêm một property mới vào ViewModel
             ViewBag.CategoryName = category.CategoryName;
 
             return View("Category", viewModel);
         }
 
+
+        
 
 
         // GET: /Shop/ProductDetail/1

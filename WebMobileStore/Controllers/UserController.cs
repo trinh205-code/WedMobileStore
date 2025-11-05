@@ -32,6 +32,7 @@ namespace WebMobileStore.Controllers
             {
                 var claims = new List<Claim>
                 {
+                    new Claim("UserId", user.UserId.ToString()), // Bắt buộc cho checkout
                     new Claim(ClaimTypes.Name, user.FullName),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.role.ToString())
@@ -72,10 +73,11 @@ namespace WebMobileStore.Controllers
 
             model.role = Role.Customer;
             db.Users.Add(model);
+            db.SaveChanges(); 
 
             var cart = new Carts
             {
-                UserId = model.UserId,
+                UserId = model.UserId
             };
 
             db.Carts.Add(cart);
