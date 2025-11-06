@@ -245,3 +245,5 @@ document.addEventListener("DOMContentLoaded", function () {
 window.openCart = openCart;
 window.closeCart = closeCart;
 
+
+

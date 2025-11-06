@@ -12,10 +12,12 @@
         <header>
             <div class="header-container">
                 <a asp-controller="Home" asp-action="Index" class="logo">🛒 TechStore</a>
-                <div class="search-box">
-                    <input type="text" placeholder="Tìm kiếm điện thoại, laptop, phụ kiện...">
-                    <button>Tìm</button>
-                </div>
+                <form action="/Search" method="get" class="search-box">
+                    <input type="text" name="keyword" placeholder="Tìm kiếm điện thoại, laptop, phụ kiện..." value="@ViewBag.Keyword" />
+                    <button type="submit">Tìm</button>
+                </form>
+
+
                 <div class="header-actions">
                     <div class="cart-icon" onclick="openCart()">
                         <img src="~/image/icons8-cart-25.png" alt="Cart" class="cart-avatar" />
@@ -44,6 +46,8 @@
                     }
                 </div>
             </div>
+
+        @RenderSection("Styles", required: false)
         </header>
 
         <!-- Navigation -->
@@ -113,43 +117,6 @@
 
     <!-- Toast -->
     @* <div id="cartToast" class="cart-toast" style="display:none;"></div> *@
-
-
-      @*   <div class="modal" id="cartModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>🛍️ Giỏ hàng của bạn</h2>
-                    <span class="close-modal" onclick="closeCart()">&times;</span>
-                </div>
-                <div id="cartItems">
-                @await Component.InvokeAsync("Cart")
-                </div>
-
-                <div class="cart-summary">
-                    <div class="cart-total">
-                        <span>Tạm tính:</span>
-                        <span id="subtotal">0đ</span>
-                    </div>
-                    <div class="cart-total">
-                        <span>Phí vận chuyển:</span>
-                        <span id="shippingFee">30.000đ</span>
-                    </div>
-                    <div class="cart-total total">
-                        <span>Tổng cộng:</span>
-                        <span id="totalPrice">0đ</span>
-                    </div>
-                </div>
-                <div class="cart-actions">
-                    <button class="continue-shopping-btn" type="button" onclick="closeCart()">Tiếp tục mua sắm</button>
-
-                    <form asp-controller="Checkout" method="get " style="display:inline;">
-                        <button type="submit" class="checkout-btn">Thanh toán</button>
-                    </form>
-                </div>
-
-            </div>
-        </div> *@
-
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
         <script src="~/js/m.js" asp-append-version="true"></script>

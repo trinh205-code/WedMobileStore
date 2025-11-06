@@ -8,8 +8,30 @@
 <!-- Banner -->
 @await Html.PartialAsync("_Banner", "flash-sale")
 
-<!-- Categories -->
-@* @await Html.PartialAsync("_Categories", Model.Categories) *@
+<!-- Brand -->
+<div class="section section-brands">
+    <div class="section-header">
+        <h2>🏷️ Thương hiệu</h2>
+    </div>
+        <div class="brand-list">
+        @if (Model.TopBrand != null && Model.TopBrand.Any())
+        {
+            foreach (var brand in Model.TopBrand)
+            {
+                <div class="brand-card">
+                    <img src="@brand.Image" alt="@brand.BrandName" />
+                </div>
+            }
+        }
+        else
+        {
+            <p>Không có thương hiệu nào để hiển thị.</p>
+        }
+
+        </div>
+    </div>
+
+</div>
 
 <!-- Flash Sale Section --> 
 <div class="section">

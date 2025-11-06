@@ -9,5 +9,7 @@ namespace WebMobileStore.ViewModels
         public IEnumerable<Products> RecommendedProducts { get; set; }
         public IEnumerable<Products> NewProducts { get; set; }
         public IEnumerable<Products> TopSellingProducts { get; set; }
+
+        public IEnumerable<Brand> TopBrand { get; set; }
     }
 }

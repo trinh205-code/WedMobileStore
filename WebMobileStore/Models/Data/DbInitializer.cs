@@ -35,12 +35,12 @@ public static class DbInitializer
             var brands = new Brand[]
             {
                 // Điện thoại
-                new Brand { BrandName = "Apple",Image = "https://icons8.com/icon/30840/apple-inc" , CategoryId = categories[0].CategoryId },
-                new Brand { BrandName = "Samsung",Image = "https://www.flaticon.com/free-icon/samsung_882849", CategoryId = categories[0].CategoryId },
-                new Brand { BrandName = "Xiaomi",Image = "https://www.flaticon.com/free-icon/xiaomi_882720", CategoryId = categories[0].CategoryId },
-                new Brand { BrandName = "Oppo",Image = "https://cdn-icons-png.flaticon.com/128/882/882745.png", CategoryId = categories[0].CategoryId },
-                new Brand { BrandName = "Huawei",Image = "https://img.icons8.com/?size=160&id=oOaQa2nsHmDV&format=png", CategoryId = categories[0].CategoryId },
-                new Brand { BrandName = "Vivo",Image = "https://cdn-icons-png.flaticon.com/128/882/882711.png", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Apple",Image = "https://cdn.hoanghamobile.vn/i/cat_logo/Uploads/2024/11/25/apple1.gif" , CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Samsung",Image = "https://cdn.hoanghamobile.vn/i/cat_logo/Uploads/2024/11/25/samsung.gif", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Xiaomi",Image = "https://cdn.hoanghamobile.vn/i/cat_logo/Uploads/2024/11/23/xiaomi.gif", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Oppo",Image = "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:50/q:30/plain/https://cellphones.com.vn/media/tmp/catalog/product/f/r/frame_62.png", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Huawei",Image = "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:50/q:30/plain/https://cellphones.com.vn/media/tmp/catalog/product/h/u/huaewwei-tablet-logo.png", CategoryId = categories[0].CategoryId },
+                new Brand { BrandName = "Vivo",Image = "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:50/q:30/plain/https://cellphones.com.vn/media/tmp/catalog/product/t/_/t_i_xu_ng_67_.png", CategoryId = categories[0].CategoryId },
 
                 // Laptop
                 new Brand { BrandName = "Dell",Image = "https://cdn-icons-png.flaticon.com/128/882/882828.png", CategoryId = categories[1].CategoryId },

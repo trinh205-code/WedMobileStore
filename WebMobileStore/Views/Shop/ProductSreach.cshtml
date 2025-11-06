@@ -1,0 +1,191 @@
+﻿@model List<WebMobileStore.Models.Entity.Products>
+@{
+    ViewBag.Title = "Kết quả tìm kiếm";
+    Layout = "_ShopLayout";
+    var searchKeyword = ViewBag.SearchKeyword as string ?? "";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/products.css" />
+}
+
+<!-- Search Results Container -->
+<div class="search-results-container">
+
+    <!-- Search Header -->
+    <div class="search-header">
+        <div class="search-info">
+            <h1 class="search-title">
+                <span class="search-icon">🔍</span>
+                Kết quả tìm kiếm
+            </h1>
+            @if (!string.IsNullOrEmpty(searchKeyword))
+            {
+                <p class="search-keyword">
+                    Từ khóa: <strong>"@searchKeyword"</strong>
+                </p>
+            }
+            <p class="search-count">
+                Tìm thấy <span class="count-number">@Model.Count</span> sản phẩm
+            </p>
+        </div>
+
+        <!-- Filter & Sort Options -->
+        <div class="search-filters">
+            <div class="filter-group">
+                <label for="sortBy">Sắp xếp:</label>
+                <select id="sortBy" class="filter-select">
+                    <option value="default">Mặc định</option>
+                    <option value="price-asc">Giá tăng dần</option>
+                    <option value="price-desc">Giá giảm dần</option>
+                    <option value="name-asc">Tên A-Z</option>
+                    <option value="name-desc">Tên Z-A</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results Grid -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="search-results-grid">
+            @foreach (var item in Model)
+            {
+                <div class="search-product-card" data-product-id="@item.ProductId">
+
+                    <!-- Product Badges -->
+                    <div class="product-badges">
+                        <span class="badge-installment">Trả góp 0%</span>
+                        @if (item.ProductVariants != null && item.ProductVariants.Any())
+                        {
+                            var discount = item.ProductVariants.FirstOrDefault()?.CompareAtPrice;
+                            if (discount.HasValue && discount.Value > item.Price)
+                            {
+                                var percentOff = Math.Round((discount.Value - item.Price) / discount.Value * 100);
+                                <span class="badge-discount">-@percentOff%</span>
+                            }
+                        }
+                    </div>
+
+                    <!-- Product Image -->
+                    <div class="search-product-image">
+                        @if (item.ProductImages != null && item.ProductImages.Any())
+                        {
+                            <img src="@item.ProductImages.FirstOrDefault()?.ImageUrl"
+                                 alt="@item.ProductsName"
+                                 loading="lazy" />
+                        }
+                        else
+                        {
+                            <img src="~/images/no-image.png"
+                                 alt="@item.ProductsName" />
+                        }
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="search-product-details">
+                        <h3 class="search-product-name">@item.ProductsName</h3>
+
+                        <div class="search-product-pricing">
+                            <span class="search-price-current">
+                                @string.Format("{0:N0} ₫", item.Price)
+                            </span>
+                            @if (item.ProductVariants != null && item.ProductVariants.Any())
+                            {
+                                var comparePrice = item.ProductVariants.FirstOrDefault()?.CompareAtPrice;
+                                if (comparePrice.HasValue && comparePrice.Value > item.Price)
+                                {
+                                    <span class="search-price-old">
+                                        @string.Format("{0:N0} ₫", comparePrice.Value)
+                                    </span>
+                                }
+                            }
+                        </div>
+
+                        <div class="search-product-rating">
+                            <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+                            <span class="rating-score">(4.5)</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="search-product-actions">
+                            <a asp-controller="Product"
+                               asp-action="Details"
+                               asp-route-id="@item.ProductId"
+                               class="btn-view-details">
+                                Thêm vào giỏ
+                            </a>
+                           
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    // <button class="btn-add-to-cart"
+    //         onclick="addToCart(@item.ProductId)">
+    //     <span class="cart-icon">🛒</span>
+    //     Thêm vào giỏ
+    // </button>
+    else
+    {
+        <!-- No Results Found -->
+        <div class="no-results-found">
+            <div class="no-results-icon">📦</div>
+            <h2 class="no-results-title">Không tìm thấy sản phẩm nào</h2>
+            <p class="no-results-message">
+                Rất tiếc, chúng tôi không tìm thấy sản phẩm nào phù hợp với từ khóa của bạn.
+            </p>
+            <div class="no-results-suggestions">
+                <h3>Gợi ý tìm kiếm:</h3>
+                <ul>
+                    <li>Kiểm tra chính tả từ khóa</li>
+                    <li>Thử sử dụng từ khóa khác</li>
+                    <li>Sử dụng từ khóa ngắn gọn hơn</li>
+                </ul>
+            </div>
+            <a asp-controller="Home" asp-action="Index" class="btn-back-home">
+                Quay về trang chủ
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Sort functionality
+        document.getElementById('sortBy').addEventListener('change', function() {
+            const sortValue = this.value;
+            const grid = document.querySelector('.search-results-grid');
+            const products = Array.from(grid.querySelectorAll('.search-product-card'));
+
+            products.sort((a, b) => {
+                const priceA = parseFloat(a.querySelector('.search-price-current').textContent.replace(/[^\d]/g, ''));
+                const priceB = parseFloat(b.querySelector('.search-price-current').textContent.replace(/[^\d]/g, ''));
+                const nameA = a.querySelector('.search-product-name').textContent;
+                const nameB = b.querySelector('.search-product-name').textContent;
+
+                switch(sortValue) {
+                    case 'price-asc':
+                        return priceA - priceB;
+                    case 'price-desc':
+                        return priceB - priceA;
+                    case 'name-asc':
+                        return nameA.localeCompare(nameB);
+                    case 'name-desc':
+                        return nameB.localeCompare(nameA);
+                    default:
+                        return 0;
+                }
+            });
+
+            products.forEach(product => grid.appendChild(product));
+        });
+
+        // Add to cart function
+        function addToCart(productId) {
+            // Your add to cart logic here
+            console.log('Adding product to cart:', productId);
+        }
+    </script>
+}

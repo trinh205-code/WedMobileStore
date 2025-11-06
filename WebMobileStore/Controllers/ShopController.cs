@@ -135,7 +135,12 @@ namespace WebMobileStore.Controllers
                     .Where(p => p.IsActive)
                     .OrderBy(p => Guid.NewGuid())
                     .Take(8)
-                    .ToList()
+                    .ToList(),
+
+                TopBrand = db.Brands
+                .Where(b => b.CategoryId  == 1)
+                .ToList()
+                
             };
 
             ViewBag.CategoryName = category.CategoryName;
@@ -144,7 +149,28 @@ namespace WebMobileStore.Controllers
         }
 
 
-        
+
+        // GET: /Shop/Search?keyword=iphone
+        [HttpGet("Search")]
+        public IActionResult Search(string keyword)
+        {
+            if (string.IsNullOrWhiteSpace(keyword))
+                return RedirectToAction("Index");
+
+            var products = db.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductVariants)
+                .Include(p => p.Brand)
+                .Where(p => p.IsActive && p.ProductsName.Contains(keyword))
+                .OrderByDescending(p => p.CreatedAt)
+                .ToList();
+
+            ViewBag.Title = $"Kết quả tìm kiếm: {keyword}";
+            ViewBag.Keyword = keyword;
+            return View("ProductSreach", products);
+        }
+
+
 
 
         // GET: /Shop/ProductDetail/1
@@ -165,25 +191,7 @@ namespace WebMobileStore.Controllers
             return View(product);
         }
 
-        // GET: /Shop/Search?keyword=iphone
-        [HttpGet("Search")]
-        public IActionResult Search(string keyword)
-        {
-            if (string.IsNullOrWhiteSpace(keyword))
-                return RedirectToAction("Index");
 
-            var products = db.Products
-                .Include(p => p.ProductImages)
-                .Include(p => p.ProductVariants)
-                .Include(p => p.Brand)
-                .Where(p => p.IsActive && p.ProductsName.Contains(keyword))
-                .OrderByDescending(p => p.CreatedAt)
-                .ToList();
-
-            ViewBag.Title = $"Kết quả tìm kiếm: {keyword}";
-            ViewBag.Keyword = keyword;
-            return View("Index", products);
-        }
 
         // GET: /Shop/NewArrivals
         [HttpGet("NewArrivals")]
