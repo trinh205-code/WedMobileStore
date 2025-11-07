@@ -4,30 +4,46 @@
     Layout = "_ShopLayout";
 }
 
-<form asp-action="PlaceOrder" method="post" class="checkout">
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-controller="Order" asp-action="PlaceOrder" method="post" class="checkout">
+    @Html.AntiForgeryToken()
+
     <div class="checkout__container">
-        <!-- Bên trái: Thông tin vận chuyển -->
+        <!-- Thông tin vận chuyển -->
         <div class="checkout__left">
-            <!-- Thông tin vận chuyển -->
-            <div class="checkout__form">
-                <h3 class="checkout__title">Thông tin vận chuyển</h3>
+            <h3 class="checkout__title">Thông tin vận chuyển</h3>
 
-                <div class="checkout__input-row">
-                    <input asp-for="User.FullName" placeholder="Họ tên" class="checkout__input" required />
-                    <input asp-for="User.Phone" placeholder="Số điện thoại" class="checkout__input" required />
-                </div>
+            <input asp-for="FullName" placeholder="Họ tên" class="checkout__input" required />
+            <span asp-validation-for="FullName" class="text-danger"></span>
 
-                <input asp-for="User.Email" placeholder="Email" class="checkout__input" type="email" required />
-                <input asp-for="User.Address" placeholder="Địa chỉ (số nhà, tên đường)" class="checkout__input" required />
+            <input asp-for="Phone" placeholder="Số điện thoại" class="checkout__input" required />
+            <span asp-validation-for="Phone" class="text-danger"></span>
 
-                <div class="checkout__input-row">
-                    <input asp-for="Ward" placeholder="Phường/Xã" class="checkout__input" required />
-                    <input asp-for="District" placeholder="Quận/Huyện" class="checkout__input" required />
-                </div>
+            <input asp-for="Email" placeholder="Email" class="checkout__input" type="email" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
 
-                <input asp-for="City" placeholder="Tỉnh/Thành phố" class="checkout__input" required />
-                @* <textarea asp-for="User.Address" placeholder="Ghi chú đơn hàng (tùy chọn)" class="checkout__textarea" rows="3"></textarea> *@
+            <!-- ❌ XÓA phần địa chỉ chi tiết -->
+            <!-- CHỈ CÒN 3 trường này -->
+            <div class="checkout__input-row">
+                <input asp-for="Ward" placeholder="Phường/Xã" class="checkout__input" required />
+                <input asp-for="District" placeholder="Quận/Huyện" class="checkout__input" required />
             </div>
+            <span asp-validation-for="Ward" class="text-danger"></span>
+            <span asp-validation-for="District" class="text-danger"></span>
+
+            <input asp-for="City" placeholder="Tỉnh/Thành phố" class="checkout__input" required />
+            <span asp-validation-for="City" class="text-danger"></span>
+
+            <!-- Hidden fields -->
+            <input type="hidden" asp-for="ShippingFee" />
 
             <!-- Hình thức thanh toán -->
             <div class="checkout__payment">
@@ -36,7 +52,7 @@
                 <div class="payment-methods">
                     <!-- Thanh toán khi nhận hàng -->
                     <label class="payment-method">
-                        <input type="radio" name="PaymentMethod" value="COD" checked />
+                        <input type="radio" asp-for="PaymentMethod" value="COD" checked />
                         <div class="payment-method__content">
                             <div class="payment-method__icon">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
@@ -52,9 +68,9 @@
                         </div>
                     </label>
 
-                    <!-- Thanh toán qua Zalopay -->
+                    <!-- Thanh toán qua ZaloPay -->
                     <label class="payment-method">
-                        <input type="radio" name="PaymentMethod" value="ZaloPay" />
+                        <input type="radio" asp-for="PaymentMethod" value="ZaloPay" />
                         <div class="payment-method__content">
                             <div class="payment-method__icon payment-method__icon--zalopay">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
@@ -71,7 +87,7 @@
 
                     <!-- Chuyển khoản ngân hàng -->
                     <label class="payment-method">
-                        <input type="radio" name="PaymentMethod" value="BankTransfer" />
+                        <input type="radio" asp-for="PaymentMethod" value="BankTransfer" />
                         <div class="payment-method__content">
                             <div class="payment-method__icon payment-method__icon--bank">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
@@ -88,12 +104,12 @@
 
                     <!-- Ví điện tử Momo -->
                     <label class="payment-method">
-                        <input type="radio" name="PaymentMethod" value="Momo" />
+                        <input type="radio" asp-for="PaymentMethod" value="Momo" />
                         <div class="payment-method__content">
                             <div class="payment-method__icon payment-method__icon--momo">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                    <circle cx="12" cy="12" r="10" fill="#D82D8B" />
-                                    <text x="12" y="16" text-anchor="middle" fill="white" font-weight="bold" font-size="12">M</text>
+                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                    <circle cx="16" cy="16" r="16" fill="#D82D8B" />
+                                    <text x="16" y="21" text-anchor="middle" fill="white" font-weight="bold" font-size="14">M</text>
                                 </svg>
                             </div>
                             <div class="payment-method__info">
@@ -106,86 +122,90 @@
             </div>
         </div>
 
-        <!-- Bên phải: Giỏ hàng & thanh toán -->
+        <!-- Giỏ hàng -->
         <div class="checkout__cart">
             <h3 class="checkout__title">Giỏ hàng</h3>
-
-            <!-- Danh sách sản phẩm -->
-            <div class="cart-items">
-                @foreach (var item in Model.CartItems)
-                {
-                    <div class="cart-item">
-                        <div class="cart-item__image">
-                            @{
-                                var firstImage = item.ProductVariant.Products.ProductImages.FirstOrDefault()?.ImageUrl ?? "/images/default.png";
+            @for (int i = 0; i < Model.CartItems.Count; i++)
+            {
+                var item = Model.CartItems[i];
+                <div class="cart-item">
+                    <div class="cart-item__image">
+                        @{
+                            var firstImage = "/images/default.png";
+                            if (item.ProductVariant?.Products?.ProductImages?.Any() == true)
+                            {
+                                firstImage = item.ProductVariant.Products.ProductImages.First().ImageUrl;
                             }
-                            <img src="@firstImage" alt="@item.ProductVariant.Products.ProductsName" />
+                        }
+                        <img src="@firstImage" alt="@item.ProductVariant?.Products?.ProductsName ?? " Sản phẩm"" />
 
-                            <div class="cart-item__quantity-wrapper">
-                                <button type="button" class="qty-btn qty-decrease">-</button>
-                                <input type="text" name="CartItems[@item.CartItemId].Quantity" value="@item.Quantity" class="cart-item__quantity-input" readonly />
-                                <button type="button" class="qty-btn qty-increase">+</button>
-                            </div>
+                        <div class="cart-item__quantity-wrapper">
+                            <button type="button" class="qty-btn qty-decrease">-</button>
+                            <input type="text" asp-for="@Model.CartItems[i].Quantity" class="cart-item__quantity-input" readonly />
+                            <button type="button" class="qty-btn qty-increase">+</button>
                         </div>
-
-
-                        <div class="cart-item__info">
-                            <span class="cart-item__name">@item.ProductVariant.Products.ProductsName</span>
-                            <span class="cart-item__variant">@item.ProductVariant.Color / @item.ProductVariant.Storage</span>
-                        </div>
-                        <span class="cart-item__price" data-unit-price="@item.ProductVariant.Price">
-                            @((item.Quantity * item.ProductVariant.Price).ToString("N0"))đ
-                        </span>
                     </div>
-                }
-            </div>
 
-            <!-- Mã giảm giá -->
-            <div class="discount-section">
-                <input type="text" placeholder="Nhập mã giảm giá" class="discount-section__input" />
-                <button type="button" class="discount-section__button">Áp dụng</button>
-            </div>
+                    <div class="cart-item__info">
+                        <span class="cart-item__name">@item.ProductVariant?.Products?.ProductsName ?? "Sản phẩm"</span>
+                        <span class="cart-item__variant">@item.ProductVariant?.Color ?? "" / @item.ProductVariant?.Storage ?? ""</span>
+                    </div>
+
+                    <span class="cart-item__price" data-unit-price="@item.ProductVariant?.Price ?? 0">
+                        @((item.Quantity * (item.ProductVariant?.Price ?? 0)).ToString("N0"))đ
+                    </span>
+
+                    <input type="hidden" asp-for="@Model.CartItems[i].CartItemId" />
+                    <input type="hidden" asp-for="@Model.CartItems[i].ProductVariantId" />
+                </div>
+            }
 
             <!-- Chi tiết thanh toán -->
             <div class="cart-summary">
                 <div class="cart-summary__row">
                     <span>Tạm tính:</span>
-                    <span id="subtotal">@Model.CartItems.Sum(i => i.Quantity * i.ProductVariant.Price).ToString("N0")</span>đ
+                    <span id="subtotal">@Model.CartItems.Where(x => x.ProductVariant != null).Sum(x => x.Quantity * x.ProductVariant.Price).ToString("N0")</span>đ
                 </div>
                 <div class="cart-summary__row">
                     <span>Phí vận chuyển:</span>
                     <span id="shippingFee">@Model.ShippingFee.ToString("N0")</span>đ
                 </div>
-                <div class="cart-summary__row">
-                    <span>Giảm giá:</span>
-                    <span class="text-success">-0đ</span>
-                </div>
                 <div class="cart-summary__row cart-summary__total">
                     <span>Tổng cộng:</span>
-                    <span id="grandTotal">@((Model.CartItems.Sum(i => i.Quantity * i.ProductVariant.Price) + Model.ShippingFee).ToString("N0"))</span>đ
+                    <span id="grandTotal">@((Model.CartItems.Where(x => x.ProductVariant != null).Sum(x => x.Quantity * x.ProductVariant.Price) + Model.ShippingFee).ToString("N0"))</span>đ
                 </div>
             </div>
 
-
-            <!-- Nút đặt hàng -->
             <button type="submit" class="checkout__button">Đặt hàng</button>
-
-            <!-- Thông báo bảo mật -->
-            <div class="payment-notice">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#3498db" stroke-width="2" />
-                    <path d="M12 16V12M12 8H12.01" stroke="#3498db" stroke-width="2" stroke-linecap="round" />
-                </svg>
-                <span>Thông tin thanh toán của bạn được bảo mật và an toàn</span>
-            </div>
         </div>
     </div>
 </form>
 
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <script>
         // Handle payment method selection
-               // Tăng / giảm số lượng
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', () => {
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                method.classList.add('selected');
+                const radio = method.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+            });
+        });
+
+        // Khởi tạo: Highlight phương thức mặc định (COD)
+        document.addEventListener('DOMContentLoaded', function() {
+            const defaultRadio = document.querySelector('input[name="PaymentMethod"]:checked');
+            if (defaultRadio) {
+                defaultRadio.closest('.payment-method').classList.add('selected');
+            }
+        });
+
+        // Tăng / giảm số lượng
         document.querySelectorAll('.cart-item__quantity-wrapper').forEach(wrapper => {
             const input = wrapper.querySelector('.cart-item__quantity-input');
             const btnIncrease = wrapper.querySelector('.qty-increase');
@@ -234,8 +254,5 @@
 
         // Khởi tạo lần đầu
         updateCartSummary();
-
-
-
     </script>
 }

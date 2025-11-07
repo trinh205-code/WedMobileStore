@@ -16,8 +16,8 @@ namespace WebMobileStore.Models.Entity
 
         // k chuaw id order de tranh vong lap
 
-        public long OrderId { get; set; }
-        public Orders Orders { get; set; }
+        public long? OrderId { get; set; }
+        public Orders? Orders { get; set; }
 
     }
 }

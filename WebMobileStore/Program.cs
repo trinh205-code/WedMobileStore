@@ -10,6 +10,8 @@ builder.Services.AddDbContext<MobileStoreContext>(options =>
 
 // Add services to the container
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor(); // 🔥 Thêm dòng này
+
 
 // Cấu hình Authentication Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

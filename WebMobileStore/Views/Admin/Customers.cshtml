@@ -1,6 +1,11 @@
 ﻿@model IEnumerable<WebMobileStore.Models.Entity.Users>
 @using WebMobileStore.Models.Entity.Enums
 
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/brand.css" />
+}
+
 @{
     ViewBag.Title = "Quản lý khách hàng";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -8,6 +13,36 @@
 
 <div class="page-content">
     <h2 class="page-title">Quản lý khách hàng</h2>
+
+    <div class="filter-bar">
+        <form method="get" class="brand-filter-bar">
+            <input type="text" name="search" placeholder="Tìm khách hàng..."
+                   value="@ViewBag.Search" class="brand-filter-search" />
+
+            <select name="role" class="brand-filter-select">
+                <option value="">-- Tất cả quyền --</option>
+
+                @if (ViewBag.Role == "Admin")
+                {
+                    <option value="Admin" selected>Admin</option>
+                    <option value="User">Khách</option>
+                }
+                else if (ViewBag.Role == "User")
+                {
+                    <option value="Admin">Admin</option>
+                    <option value="User" selected>Khách</option>
+                }
+                else
+                {
+                    <option value="Admin">Admin</option>
+                    <option value="User">Khách</option>
+                }
+            </select>
+
+            <button type="submit" class="brand-filter-btn">Lọc</button>
+        </form>
+    </div>
+
 
     <div class="table-card">
         @if (Model != null && Model.Any())
@@ -86,3 +121,33 @@
         }
     </div>
 </div>
+
+@if (ViewBag.TotalPages > 1)
+{
+    <div class="pagination-container">
+        <ul class="pagination">
+
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li>
+                    <a href="@Url.Action("Customers", new { page = ViewBag.CurrentPage - 1, search = ViewBag.Search, role = ViewBag.Role })">« Trước</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="@(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a href="@Url.Action("Customers", new { page = i, search = ViewBag.Search, role = ViewBag.Role })">@i</a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li>
+                    <a href="@Url.Action("Customers", new { page = ViewBag.CurrentPage + 1, search = ViewBag.Search, role = ViewBag.Role })">Sau »</a>
+                </li>
+            }
+
+        </ul>
+    </div>
+}

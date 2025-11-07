@@ -1,0 +1,542 @@
+﻿@model WebMobileStore.Models.Entity.Products
+
+@{
+    ViewData["Title"] = Model.ProductsName;
+    Layout = "_ShopLayout";
+    var firstVariant = Model.ProductVariants?.FirstOrDefault();
+    var minPrice = Model.ProductVariants?.Min(v => v.Price) ?? Model.Price;
+    var maxPrice = Model.ProductVariants?.Max(v => v.Price) ?? Model.Price;
+    var comparePrice = firstVariant?.CompareAtPrice ?? Model.Price * 1.3;
+    var discount = comparePrice > 0 ? Math.Round(((comparePrice - minPrice) / comparePrice) * 100) : 0;
+    
+    var colors = Model.ProductVariants?.Select(v => v.Color).Distinct().ToList() ?? new List<string>();
+    var storages = Model.ProductVariants?.Select(v => v.Storage).Distinct().OrderBy(s => s).ToList() ?? new List<string>();
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/detail.css" />
+}
+
+<div class="container">
+    <div class="product-header">
+        <!-- Gallery -->
+        <div class="product-gallery">
+            <img src="@(Model.ProductImages?.FirstOrDefault()?.ImageUrl ?? "/images/default-product.jpg")" 
+                 alt="@Model.ProductsName" 
+                 class="main-image" 
+                 id="mainImage">
+            
+            @if (Model.ProductImages?.Count > 1)
+            {
+                <div class="thumbnail-list">
+                    @foreach (var img in Model.ProductImages.Take(6))
+                    {
+                        <img src="@img.ImageUrl" 
+                             alt="@Model.ProductsName" 
+                             class="thumbnail @(img == Model.ProductImages.First() ? "active" : "")"
+                             onclick="changeImage(this)">
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+            <h1 class="product-title">@Model.ProductsName</h1>
+            
+            <div class="rating-section">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <span style="margin-left: 5px; color: #333; font-weight: 600;">5.0</span>
+                </div>
+                <span class="rating-count">1,4k Đánh Giá</span>
+                <span class="sold-count">Đã Bán 9k+</span>
+            </div>
+
+            <div class="price-section">
+                <span class="current-price" id="displayPrice">@minPrice.ToString("N0")đ</span>
+                @if (minPrice != maxPrice)
+                {
+                    <span class="current-price"> - @maxPrice.ToString("N0")đ</span>
+                }
+                <span class="original-price">@comparePrice.ToString("N0")đ</span>
+                <span class="discount-badge">-@discount%</span>
+            </div>
+
+            <div class="voucher-section">
+                <i class="fas fa-ticket-alt voucher-icon"></i>
+                <span class="voucher-text">Giảm 300k₫</span>
+            </div>
+
+            <div class="installment-info">
+                <i class="fas fa-credit-card"></i> 0% TRẢ GÓP - 12 tháng x 1.199.167₫ (Lãi suất 0%)
+            </div>
+
+            <div class="shipping-info">
+                <p><i class="fas fa-truck"></i> <strong>Nhận từ 3-7 ngày</strong></p>
+                <p><i class="fas fa-check-circle"></i> Phí ship 0₫</p>
+                <p style="color: #666; font-size: 13px;">Tặng Voucher 15.000₫ nếu đơn giao sau thời gian trên</p>
+            </div>
+
+            <div class="warranty-section">
+                <div class="warranty-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>Trả hàng miễn phí 15 ngày</div>
+                </div>
+                <div class="warranty-item">
+                    <i class="fas fa-certificate"></i>
+                    <div>Chính hãng 100%</div>
+                </div>
+                <div class="warranty-item">
+                    <i class="fas fa-shipping-fast"></i>
+                    <div>Miễn phí vận chuyển</div>
+                </div>
+            </div>
+
+            <!-- Storage Selection -->
+            @if (storages.Any())
+            {
+                <div class="option-section">
+                    <div class="option-label">Dung lượng:</div>
+                    <div class="option-buttons" id="storageOptions">
+                        @foreach (var storage in storages)
+                        {
+                            <button class="option-btn @(storage == storages.First() ? "active" : "")" 
+                                    data-storage="@storage"
+                                    onclick="selectStorage(this, '@storage')">
+                                @storage
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Color Selection -->
+            @if (colors.Any())
+            {
+                <div class="option-section">
+                    <div class="option-label">Màu sắc:</div>
+                    <div class="option-buttons" id="colorOptions">
+                        @foreach (var color in colors)
+                        {
+                            <button class="option-btn @(color == colors.First() ? "active" : "")" 
+                                    data-color="@color"
+                                    onclick="selectColor(this, '@color')">
+                                <span class="color-option">
+                                    <span class="color-circle" style="background-color: @GetColorCode(color);"></span>
+                                    @color
+                                </span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Quantity -->
+            <div class="quantity-section">
+                <span class="quantity-label">Số Lượng:</span>
+                <div class="quantity-control">
+                    <button class="quantity-btn" onclick="decreaseQuantity()">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="99" readonly>
+                    <button class="quantity-btn" onclick="increaseQuantity()">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <span class="stock-status" id="stockStatus">Còn hàng</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-add-cart" onclick="addToCartDetail()">
+                    <i class="fas fa-shopping-cart"></i>
+                    Thêm Vào Giỏ Hàng
+                </button>
+                <button class="btn btn-buy-now" onclick="buyNow()">
+                    Mua Ngay
+                </button>
+            </div>
+
+            <!-- Share -->
+            <div class="share-section">
+                <span class="share-label">Chia sẻ:</span>
+                <div class="share-buttons">
+                    <button class="share-btn facebook" onclick="shareProduct('facebook')">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="share-btn twitter" onclick="shareProduct('twitter')">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="share-btn pinterest" onclick="shareProduct('pinterest')">
+                        <i class="fab fa-pinterest"></i>
+                    </button>
+                    <button class="share-btn link" onclick="copyLink()">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="product-description">
+        <h2>Mô tả sản phẩm</h2>
+        <p>@Html.Raw(Model.Description ?? "Thông tin chi tiết về sản phẩm đang được cập nhật...")</p>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const variants = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+    (Model.ProductVariants ?? new List<WebMobileStore.Models.Entity.ProductVariant>())
+        .Select(v => new {
+            v.ProductVariantId,
+            v.Color,
+            v.Storage,
+            v.Price,
+            v.CompareAtPrice,
+            v.Quantity
+        })
+));
+
+let selectedColor = '@colors.FirstOrDefault()';
+let selectedStorage = '@storages.FirstOrDefault()';
+
+// ✅ Hàm cập nhật số lượng giỏ hàng từ server
+function updateCartCount() {
+    fetch('/Cart/GetCount')  // Giả sử endpoint trả về { "count": 5 }
+        .then(response => response.json())
+        .then(data => {
+            const cartCountElem = document.getElementById('cart-count');
+            if (cartCountElem) {
+                cartCountElem.textContent = data.count || 0;
+            }
+        })
+        .catch(err => {
+            console.error('Lỗi cập nhật cart count:', err);
+        });
+}
+
+// ✅ Khởi tạo: Tự động chọn variant đầu tiên có sẵn khi load trang
+document.addEventListener('DOMContentLoaded', function() {
+    // Kiểm tra xem variant mặc định có tồn tại không
+    const defaultVariant = variants.find(v =>
+        (v.Color || '').trim().toLowerCase() === selectedColor.toLowerCase() &&
+        (v.Storage || '').trim().toLowerCase() === selectedStorage.toLowerCase()
+    );
+
+    // Nếu không tồn tại, chọn variant đầu tiên có sẵn
+    if (!defaultVariant && variants.length > 0) {
+        const firstVariant = variants[0];
+        selectedColor = (firstVariant.Color || '').trim().toLowerCase();
+        selectedStorage = (firstVariant.Storage || '').trim().toLowerCase();
+
+        // Cập nhật UI
+        document.querySelectorAll('#colorOptions .option-btn').forEach(b => {
+            if ((b.dataset.color || '').trim().toLowerCase() === selectedColor) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
+
+        document.querySelectorAll('#storageOptions .option-btn').forEach(b => {
+            if ((b.dataset.storage || '').trim().toLowerCase() === selectedStorage) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
+    }
+
+    updatePrice();
+    updateCartCount();  // Cập nhật cart count khi load trang
+});
+
+// ✅ Hàm đổi hình ảnh
+function changeImage(thumbnail) {
+    document.getElementById('mainImage').src = thumbnail.src;
+    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+    thumbnail.classList.add('active');
+}
+
+// ✅ Chọn dung lượng
+function selectStorage(btn, storage) {
+    selectedStorage = (storage || '').trim().toLowerCase();
+    document.querySelectorAll('#storageOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const colorButtons = document.querySelectorAll('#colorOptions .option-btn');
+    let firstAvailableColor = null;
+    let currentColorAvailable = false;
+
+    // Kiểm tra màu nào có sẵn với dung lượng đã chọn
+    colorButtons.forEach(b => {
+        const color = (b.dataset.color || '').trim().toLowerCase();
+        const exists = variants.some(v =>
+            (v.Storage || '').trim().toLowerCase() === selectedStorage &&
+            (v.Color || '').trim().toLowerCase() === color
+        );
+
+        // Ẩn những màu không có sẵn
+        b.disabled = !exists;
+        b.style.opacity = exists ? '1' : '0.4';
+        b.style.cursor = exists ? 'pointer' : 'not-allowed';
+
+        // Lưu màu khả dụng đầu tiên
+        if (exists && !firstAvailableColor) {
+            firstAvailableColor = color;
+        }
+
+        // Kiểm tra màu hiện tại có khả dụng không
+        if (exists && color === selectedColor) {
+            currentColorAvailable = true;
+        }
+    });
+
+    // Nếu màu hiện tại không khả dụng, tự động chọn màu khả dụng đầu tiên
+    if (!currentColorAvailable && firstAvailableColor) {
+        selectedColor = firstAvailableColor;
+        colorButtons.forEach(b => {
+            const color = (b.dataset.color || '').trim().toLowerCase();
+            if (color === firstAvailableColor) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
+    }
+
+    updatePrice();
+}
+
+// ✅ Chọn màu
+function selectColor(btn, color) {
+    selectedColor = color.trim().toLowerCase();
+    document.querySelectorAll('#colorOptions .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const storageButtons = document.querySelectorAll('#storageOptions .option-btn');
+    let firstAvailableStorage = null;
+    let currentStorageAvailable = false;
+
+    // Kiểm tra dung lượng nào có sẵn với màu đã chọn
+    storageButtons.forEach(b => {
+        const storage = (b.dataset.storage || '').trim().toLowerCase();
+        const exists = variants.some(v =>
+            (v.Color || '').trim().toLowerCase() === selectedColor &&
+            (v.Storage || '').trim().toLowerCase() === storage
+        );
+
+        // Ẩn những dung lượng không có sẵn
+        b.disabled = !exists;
+        b.style.opacity = exists ? '1' : '0.4';
+        b.style.cursor = exists ? 'pointer' : 'not-allowed';
+
+        // Lưu dung lượng khả dụng đầu tiên
+        if (exists && !firstAvailableStorage) {
+            firstAvailableStorage = storage;
+        }
+
+        // Kiểm tra dung lượng hiện tại có khả dụng không
+        if (exists && storage === selectedStorage) {
+            currentStorageAvailable = true;
+        }
+    });
+
+    // Nếu dung lượng hiện tại không khả dụng, tự động chọn dung lượng khả dụng đầu tiên
+    if (!currentStorageAvailable && firstAvailableStorage) {
+        selectedStorage = firstAvailableStorage;
+        storageButtons.forEach(b => {
+            const storage = (b.dataset.storage || '').trim().toLowerCase();
+            if (storage === firstAvailableStorage) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
+    }
+
+    updatePrice();
+}
+
+// ✅ Cập nhật giá & tồn kho
+function updatePrice() {
+    const variant = variants.find(v =>
+        v.Color?.trim().toLowerCase() === selectedColor &&
+        v.Storage?.trim().toLowerCase() === selectedStorage
+    );
+
+    const priceElem = document.getElementById('displayPrice');
+    const stockElem = document.getElementById('stockStatus');
+    const addCartBtn = document.querySelector('.btn-add-cart');
+    const buyNowBtn = document.querySelector('.btn-buy-now');
+    const quantityBtns = document.querySelectorAll('.quantity-control button');
+
+    if (variant) {
+        // Có variant khả dụng
+        priceElem.textContent = variant.Price.toLocaleString('vi-VN') + 'đ';
+        
+        if (variant.Quantity > 0) {
+            stockElem.textContent = `Còn ${variant.Quantity} sản phẩm`;
+            stockElem.style.color = '#28a745';
+            quantityBtns.forEach(b => b.disabled = false);
+            addCartBtn.disabled = false;
+            buyNowBtn.disabled = false;
+        } else {
+            stockElem.textContent = 'Hết hàng';
+            stockElem.style.color = '#dc3545';
+            quantityBtns.forEach(b => b.disabled = true);
+            addCartBtn.disabled = true;
+            buyNowBtn.disabled = true;
+        }
+    } else {
+        // Không có variant tương ứng
+        priceElem.textContent = 'Vui lòng chọn phiên bản';
+        stockElem.textContent = 'Không có sẵn';
+        stockElem.style.color = '#dc3545';
+        quantityBtns.forEach(b => b.disabled = true);
+        addCartBtn.disabled = true;
+        buyNowBtn.disabled = true;
+    }
+}
+
+// ✅ Giảm số lượng
+function decreaseQuantity() {
+    const input = document.getElementById('quantity');
+    if (input.value > 1) input.value = parseInt(input.value) - 1;
+}
+
+// ✅ Tăng số lượng
+// ✅ Tăng số lượng
+function increaseQuantity() {
+    const input = document.getElementById('quantity');
+    const variant = variants.find(v =>
+        v.Color?.trim().toLowerCase() === selectedColor &&
+        v.Storage?.trim().toLowerCase() === selectedStorage
+    );
+    const maxQty = variant ? variant.Quantity : 99;
+    if (parseInt(input.value) < maxQty) input.value = parseInt(input.value) + 1;
+}
+
+// ✅ Thêm vào giỏ hàng
+function addToCartDetail() {
+    const variant = variants.find(v =>
+        v.Color?.trim().toLowerCase() === selectedColor &&
+        v.Storage?.trim().toLowerCase() === selectedStorage
+    );
+    const quantity = parseInt(document.getElementById('quantity').value);
+
+    if (!variant) {
+        alert('❌ Vui lòng chọn màu sắc và dung lượng hợp lệ');
+        return;
+    }
+
+    if (variant.Quantity <= 0) {
+        alert('❌ Sản phẩm này hiện đã hết hàng');
+        return;
+    }
+
+    fetch('/Cart/AddToCart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            productVariantId: variant.ProductVariantId,
+            quantity: quantity
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ Đã thêm vào giỏ hàng!');
+            updateCartCount();  // Cập nhật cart count ngay lập tức
+        } else {
+            alert(data.message || '❌ Có lỗi xảy ra!');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        alert('✅ Đã thêm vào giỏ hàng!');
+        updateCartCount();  // Cập nhật cart count ngay lập tức
+    });
+}
+
+// ✅ Mua ngay
+function buyNow() {
+    const variant = variants.find(v =>
+        v.Color?.trim().toLowerCase() === selectedColor &&
+        v.Storage?.trim().toLowerCase() === selectedStorage
+    );
+    
+    if (!variant) {
+        alert('❌ Vui lòng chọn màu sắc và dung lượng hợp lệ');
+        return;
+    }
+
+    if (variant.Quantity <= 0) {
+        alert('❌ Sản phẩm này hiện đã hết hàng');
+        return;
+    }
+
+    addToCartDetail();
+    setTimeout(() => {
+        window.location.href = 'Order/Checkout';
+    }, 500);
+}
+
+// ✅ Chia sẻ sản phẩm
+function shareProduct(platform) {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent('@Model.ProductsName');
+
+    let shareUrl = '';
+    switch(platform) {
+        case 'facebook':
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            break;
+        case 'twitter':
+            shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+            break;
+        case 'pinterest':
+            shareUrl = `https://pinterest.com/pin/create/button/?url=${url}&description=${title}`;
+            break;
+    }
+
+    if (shareUrl) window.open(shareUrl, '_blank', 'width=600,height=400');
+}
+
+// ✅ Copy link
+function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('✅ Đã copy link sản phẩm!');
+    }).catch(err => {
+        console.error('Copy failed:', err);
+        alert('❌ Không thể copy link');
+    });
+}
+</script>
+}
+
+@functions {
+    string GetColorCode(string colorName) 
+    { 
+        return colorName?.Trim().ToLower() switch 
+        { 
+            "đỏ" or "red" => "#e30019", 
+            "xanh dương" or "blue" => "#007bff", 
+            "tím" or "purple" => "#9b59b6", 
+            "vàng ánh" or "starlight" => "#f5f5f5", 
+            "đen midnight" or "midnight" => "#1a1a1a", 
+            "vàng" or "yellow" => "#ffd700", 
+            "xanh lá" or "green" => "#28a745", 
+            "hồng" or "pink" => "#ff69b4", 
+            "trắng" or "white" => "#ffffff", 
+            "đen" or "black" => "#000000", 
+            _ => "#cccccc" 
+        }; 
+    }
+}

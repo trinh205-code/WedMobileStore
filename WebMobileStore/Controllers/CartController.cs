@@ -47,8 +47,14 @@ namespace WebMobileStore.Controllers
             return Json(new { success = true, cartItems });
         }
 
+        public class AddToCartRequest
+        {
+            public long ProductVariantId { get; set; }
+            public int Quantity { get; set; }
+        }
+
         [HttpPost("AddToCart")]
-        public IActionResult AddToCart(long variantId, int quantity = 1)
+        public IActionResult AddToCart([FromBody] AddToCartRequest req)
         {
             var userIdClaim = User.FindFirst("UserId")?.Value;
             if (userIdClaim == null)
@@ -67,17 +73,46 @@ namespace WebMobileStore.Controllers
                 db.SaveChanges();
             }
 
-            var existingItem = cart.Items.FirstOrDefault(i => i.ProductVariantId == variantId);
+            var existingItem = cart.Items.FirstOrDefault(i => i.ProductVariantId == req.ProductVariantId);
             if (existingItem != null)
-                existingItem.Quantity += quantity;
+                existingItem.Quantity += req.Quantity;
             else
-                cart.Items.Add(new CartItem { ProductVariantId = variantId, Quantity = quantity });
+                cart.Items.Add(new CartItem { ProductVariantId = req.ProductVariantId, Quantity = req.Quantity });
 
             db.SaveChanges();
 
-            int count = cart.Items.Sum(i => i.Quantity);
+            int count = cart.Items.Count();
+            int totalQuantity = cart.Items.Sum(i => i.Quantity);
+
+            HttpContext.Session.SetInt32("CartCount", count);
+
             return Json(new { success = true, cartCount = count });
         }
+
+
+        [HttpGet("GetCount")]
+        public IActionResult GetCount()
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+
+            if (userIdClaim == null)
+            {
+                // Nếu chưa đăng nhập, có thể lấy từ session
+                int sessionCount = HttpContext.Session.GetInt32("CartCount") ?? 0;
+                return Json(new { success = true, count = sessionCount });
+            }
+
+            long userId = long.Parse(userIdClaim);
+
+            // Lấy số lượng sản phẩm trong giỏ của user
+            int count = db.CartItems
+                .Include(ci => ci.Carts)
+                .Count(ci => ci.Carts.UserId == userId);
+
+            return Json(new { success = true, count });
+        }
+
+
 
         [HttpPost("UpdateQuantity")]
         public IActionResult UpdateQuantity(long cartItemId, int quantity)

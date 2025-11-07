@@ -138,9 +138,8 @@ namespace WebMobileStore.Controllers
                     .ToList(),
 
                 TopBrand = db.Brands
-                .Where(b => b.CategoryId  == 1)
-                .ToList()
-                
+                    .Where(b => b.CategoryId == 1)
+                    .ToList() ?? new List<Brand>()
             };
 
             ViewBag.CategoryName = category.CategoryName;
@@ -174,22 +173,33 @@ namespace WebMobileStore.Controllers
 
 
         // GET: /Shop/ProductDetail/1
-        [HttpGet("ProductDetail/{id}")]
+        [HttpGet("Shop/ProductDetail/{id}")]
         public IActionResult ProductDetail(long id)
         {
             var product = db.Products
-                .Include(p => p.ProductImages)
                 .Include(p => p.ProductVariants)
-                .Include(p => p.Brand)
-                .Include(p => p.Reviews)
-                    .ThenInclude(r => r.Users)
+                .Include(p => p.ProductImages)
                 .FirstOrDefault(p => p.ProductId == id);
 
-            if (product == null) return NotFound();
+            if (product == null)
+                return NotFound();
 
-            ViewBag.Title = product.ProductsName;
             return View(product);
         }
+
+        [HttpGet("Shop/GetAvailableColors")]
+        public IActionResult GetAvailableColors(long productId, string storage)
+        {
+            var availableColors = db.ProductVariants
+                .Where(v => v.ProductId == productId && v.Storage == storage)
+                .Select(v => new { v.Color })  // ✅ chỉ lấy màu
+                .Distinct()
+                .ToList();
+
+            return Json(availableColors);
+        }
+
+
 
 
 
@@ -242,5 +252,6 @@ namespace WebMobileStore.Controllers
             ViewBag.Title = "Khuyến mãi hot";
             return View("Index", products);
         }
+
     }
 }

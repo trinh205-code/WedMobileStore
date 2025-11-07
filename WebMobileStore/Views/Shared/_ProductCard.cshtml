@@ -1,6 +1,7 @@
 ﻿@model WebMobileStore.Models.Entity.Products
 
-<div class="product-card" data-product-id="@Model.ProductId">
+<a asp-action="ProductDetail" asp-route-id="@Model.ProductId"
+   class="product-card" style="text-decoration:none; color:inherit;">   
     <div class="installment-badge">Trả góp 0%</div>
 
     <div class="product-image">
@@ -29,4 +30,4 @@
         <div class="product-price">@string.Format("{0:N0} ₫", Model.Price)</div>
         <div class="product-rating">⭐⭐⭐⭐⭐ <span>(4.5)</span></div>
     </div>
-</div>
+</a>

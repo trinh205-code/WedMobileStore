@@ -49,3 +49,14 @@
         }
     </div>
 </div>
+
+@if (ViewBag.TotalPages > 1)
+{
+    <div class="pagination">
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <a class="page-link @(i == ViewBag.Page ? "active" : "")"
+               href="@Url.Action("Orders", new { page = i })">@i</a>
+        }
+    </div>
+}

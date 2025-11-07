@@ -562,18 +562,23 @@ namespace WebMobileStore.Controllers
 
         // Orders - Danh sách đơn hàng
         [HttpGet("Orders")]
-        public IActionResult Orders()
+        public IActionResult Orders(int page = 1, int pageSize = 6)
         {
             try
             {
-                var orders = db.Orders
+                var query = db.Orders
                     .Include(o => o.User)
                     .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.ProductVariant)
-                    .OrderByDescending(o => o.OrderdAt)
-                    .ToList();
+                    .OrderByDescending(o => o.OrderdAt);
 
-                return View(orders ?? new List<Orders>());
+                int totalOrders = query.Count();
+                var orders = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                ViewBag.Page = page;
+                ViewBag.TotalPages = (int)Math.Ceiling((double)totalOrders / pageSize);
+
+                return View(orders);
             }
             catch (Exception ex)
             {
@@ -582,7 +587,8 @@ namespace WebMobileStore.Controllers
             }
         }
 
-        
+
+
 
         // Categories - Danh sách danh mục
         [HttpGet("Categories")]
@@ -766,24 +772,39 @@ namespace WebMobileStore.Controllers
 
         // Customers - Danh sách khách hàng
         [HttpGet("Customers")]
-        public IActionResult Customers()
+        public IActionResult Customers(string search, string role, int page = 1, int pageSize = 10)
         {
-            try
-            {
-                var customers = db.Users
-                    .Include(u => u.Address)
-                    .Include(u => u.Orders)
-                    .OrderByDescending(u => u.CreatedAt)
-                    .ToList();
+            var query = db.Users
+                .Include(u => u.Address)
+                .Include(u => u.Orders)
+                .AsQueryable();
 
-                return View(customers ?? new List<Users>());
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Không thể tải danh sách khách hàng: " + ex.Message;
-                return View(new List<Users>());
-            }
+            if (!string.IsNullOrEmpty(search))
+                query = query.Where(u => u.FullName.Contains(search) || u.Email.Contains(search));
+
+            if (!string.IsNullOrEmpty(role) && Enum.TryParse<Role>(role, out var selectedRole))
+                query = query.Where(u => u.role == selectedRole);
+
+            int totalItems = query.Count();
+
+            var users = query
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.Search = search;
+            ViewBag.Role = role;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(users);
         }
+
+
+
+
+
 
 
 

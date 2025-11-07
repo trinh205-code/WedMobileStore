@@ -6,6 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>@ViewBag.Title - TechStore</title>
         <link rel="stylesheet" href="~/css/m.css" asp-append-version="true">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     </head>
         <body>
         <!-- Header -->
@@ -19,11 +21,7 @@
 
 
                 <div class="header-actions">
-                    <div class="cart-icon" onclick="openCart()">
-                        <img src="~/image/icons8-cart-25.png" alt="Cart" class="cart-avatar" />
-                        <span class="cart-count" >@ViewBag.CartCount</span>
-                    </div>
-
+                @await Component.InvokeAsync("CartCount")
 
                     @if (User.Identity.IsAuthenticated)
                     {
@@ -105,7 +103,7 @@
 
                 <div class="cart-actions">
                     <button class="clear-cart-btn">Xóa tất cả</button>
-                    <a asp-controller="CheckOut" asp-action="Index" class="checkout-btn">Thanh toán</a>
+                    <a asp-controller="Order" asp-action="checkout" class="checkout-btn">Thanh toán</a>
                 </div>
             </div>
         </div>
@@ -123,5 +121,7 @@
 
 
         @await RenderSectionAsync("Scripts", required: false)
+
+    
     </body>
     </html>

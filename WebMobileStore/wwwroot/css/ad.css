@@ -750,6 +750,23 @@ tbody tr:hover {
 
 
 ////////////////////////////////////////////
+.pagination {
+    text-align: center;
+    margin-top: 15px;
+}
 
+.page-link {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    margin: 0 3px;
+    text-decoration: none;
+    color: #333;
+}
+
+    .page-link.active {
+        background: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
 
 

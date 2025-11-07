@@ -32,7 +32,7 @@ namespace WebMobileStore.Models.Entity
         public long UserId { get; set; }
         public Users User { get; set; }
 
-        public long PaymentId { get; set;}
+        public long? PaymentId { get; set;}
         public Payment Payment { get; set; }    
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
