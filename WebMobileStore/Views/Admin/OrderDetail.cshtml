@@ -1,0 +1,162 @@
+﻿@model WebMobileStore.Models.Entity.Orders
+@using WebMobileStore.Models.Entity.Enums
+
+@{
+    ViewBag.Title = $"Chi tiết đơn hàng #{Model.OrdersId}";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/order.css" />
+}
+
+<div class="page-content">
+    <h2 class="page-title">Chi tiết đơn hàng #ORD-@Model.OrdersId</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <!-- Thông tin đơn hàng -->
+    <div class="detail-card">
+        <h3>Thông tin đơn hàng</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <strong>Mã đơn:</strong> #ORD-@Model.OrdersId
+            </div>
+            <div class="info-item">
+                <strong>Khách hàng:</strong> @(Model.User?.FullName ?? "N/A") (@(Model.User?.Email ?? "N/A"))
+            </div>
+            <div class="info-item">
+                <strong>Tổng tiền:</strong> @Model.TotalAmount.ToString("N0")₫
+            </div>
+            <div class="info-item">
+                <strong>Thanh toán:</strong>
+                <span class="badge @(Model.PaymentStatus == PaymentStatus.Paid ? "badge-success" : "badge-warning")">
+                    @(Model.PaymentStatus == PaymentStatus.Paid ? "Đã thanh toán" : "Chưa thanh toán")
+                </span>
+            </div>
+            <div class="info-item">
+                <strong>Phương thức thanh toán:</strong>
+                @{
+                    var paymentMethod = Model.Payment?.PaymentMethod switch
+                    {
+                        PaymentMethod.EWallet => "Ví MoMo",
+                        PaymentMethod.BankTransfer => "Chuyển khoản ngân hàng",
+                        PaymentMethod.CashOnDelivery => "Thanh toán khi nhận hàng",
+                        _ => "Chưa chọn"
+                    };
+                }
+                @paymentMethod
+            </div>
+            <div class="info-item">
+                <strong>Trạng thái:</strong>
+                <span class="badge badge-@Model.OrderStatus.ToString().ToLower()">
+                    @switch (Model.OrderStatus)
+                    {
+                        case OrderStatus.Pending:
+                            @:Chờ xử lý
+                            break;
+                        case OrderStatus.Confirmed:
+                            @:Đã xác nhận
+                            break;
+                        case OrderStatus.Shipped:
+                            @:Đang giao hàng
+                            break;
+                        case OrderStatus.Delivered:
+                            @:Đã giao hàng
+                            break;
+                        case OrderStatus.Cancelled:
+                            @:Đã hủy
+                            break;
+                        default:
+                            @Model.OrderStatus.ToString()
+                            break;
+                    }
+                </span>
+            </div>
+            <div class="info-item">
+                <strong>Ngày đặt:</strong> @Model.OrderdAt.ToString("dd/MM/yyyy HH:mm")
+            </div>
+            <div class="info-item">
+                <strong>Địa chỉ:</strong> @($"{Model.Address}, {Model.Ward}, {Model.District}, {Model.City}")
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <div class="detail-card">
+        <h3>Danh sách sản phẩm</h3>
+        @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+        {
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@(detail.ProductVariant?.Products?.ProductsName ?? "N/A")</td>
+                            <td>@detail.Quantity</td>
+                            <td>@detail.UnitPrice.ToString("N0")₫</td>
+                            <td>@((detail.Quantity * detail.UnitPrice).ToString("N0"))₫</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Không có sản phẩm nào trong đơn hàng.</p>
+        }
+    </div>
+
+    <!-- Nút hành động -->
+    <div class="action-buttons">
+        <a href="@Url.Action("Orders", "Admin")" class="btn btn-secondary">⬅ Quay lại danh sách</a>
+
+        @if (Model.OrderStatus == OrderStatus.Pending)
+        {
+            <form asp-action="UpdateOrderStatus" method="post" style="display:inline;">
+                <input type="hidden" name="orderId" value="@Model.OrdersId" />
+                <input type="hidden" name="status" value="@OrderStatus.Confirmed" />
+                <button type="submit" class="btn btn-primary">✅ Xác nhận đơn hàng</button>
+            </form>
+        }
+        else if (Model.OrderStatus == OrderStatus.Confirmed)
+        {
+            <form asp-action="UpdateOrderStatus" method="post" style="display:inline;">
+                <input type="hidden" name="orderId" value="@Model.OrdersId" />
+                <input type="hidden" name="status" value="@OrderStatus.Shipped" />
+                <button type="submit" class="btn btn-warning">🚚 Giao hàng</button>
+            </form>
+        }
+        else if (Model.OrderStatus == OrderStatus.Shipped)
+        {
+            <form asp-action="UpdateOrderStatus" method="post" style="display:inline;">
+                <input type="hidden" name="orderId" value="@Model.OrdersId" />
+                <input type="hidden" name="status" value="@OrderStatus.Delivered" />
+                <button type="submit" class="btn btn-success">🎉 Hoàn tất giao hàng</button>
+            </form>
+        }
+
+        @if (Model.OrderStatus != OrderStatus.Cancelled && Model.OrderStatus != OrderStatus.Delivered)
+        {
+            <form asp-action="UpdateOrderStatus" method="post" style="display:inline;">
+                <input type="hidden" name="orderId" value="@Model.OrdersId" />
+                <input type="hidden" name="status" value="@OrderStatus.Cancelled" />
+                <button type="submit" class="btn btn-danger">❌ Hủy đơn hàng</button>
+            </form>
+        }
+    </div>
+</div>

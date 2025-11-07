@@ -1,22 +1,26 @@
 ﻿@model IEnumerable<WebMobileStore.Models.Entity.Orders>
+@using WebMobileStore.Models.Entity.Enums
 
 @{
     ViewBag.Title = "Quản lý đơn hàng";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
+@section Styles {
+    <link rel="stylesheet" href="~/css/order.css" />
+}
 <div class="page-content">
     <h2 class="page-title">Quản lý đơn hàng</h2>
 
     <div class="table-card">
         @if (Model != null && Model.Any())
         {
-            <table>
+            <table class="order-table">
                 <thead>
                     <tr>
                         <th>Mã đơn</th>
                         <th>Khách hàng</th>
                         <th>Tổng tiền</th>
+                        <th>Thanh toán</th>
                         <th>Trạng thái</th>
                         <th>Ngày đặt</th>
                         <th>Thao tác</th>
@@ -30,11 +34,74 @@
                             <td>@(order.User?.FullName ?? "N/A")</td>
                             <td>@order.TotalAmount.ToString("N0")₫</td>
                             <td>
-                                <span class="status-badge success">@order.OrderStatus</span>
+                                <span class="badge @(order.PaymentStatus == PaymentStatus.Paid ? "badge-success" : "badge-warning")">
+                                    @(order.PaymentStatus == PaymentStatus.Paid ? "Đã thanh toán" : "Chưa thanh toán")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-@order.OrderStatus.ToString().ToLower()">
+                                    @switch (order.OrderStatus)
+                                    {
+                                        case OrderStatus.Pending:
+                                            @:Chờ xử lý
+                                            break;
+                                        case OrderStatus.Confirmed:
+                                            @:Đã xác nhận
+                                            break;
+                                        case OrderStatus.Shipped:
+                                            @:Đang giao hàng
+                                            break;
+                                        case OrderStatus.Delivered:
+                                            @:Đã giao hàng
+                                            break;
+                                        case OrderStatus.Cancelled:
+                                            @:Đã hủy
+                                            break;
+                                        default:
+                                            @order.OrderStatus.ToString()
+                                            break;
+                                    }
+                                </span>
                             </td>
                             <td>@order.OrderdAt.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>
-                                <button class="action-btn">Chi tiết</button>
+                                <div class="action-group">
+                                    <a asp-action="OrderDetail" asp-route-id="@order.OrdersId" class="btn btn-info btn-sm">Chi tiết</a>
+
+                                    @if (order.OrderStatus == OrderStatus.Pending)
+                                    {
+                                        <form asp-action="UpdateOrderStatus" method="post" style="display:inline;">
+                                            <input type="hidden" name="orderId" value="@order.OrdersId" />
+                                            <input type="hidden" name="status" value="@OrderStatus.Confirmed" />
+                                            <button type="submit" class="btn btn-primary btn-sm">Xác nhận</button>
+                                        </form>
+                                    }
+                                    else if (order.OrderStatus == OrderStatus.Confirmed)
+                                    {
+                                        <form asp-action="UpdateOrderStatus" method="post" style="display:inline;">
+                                            <input type="hidden" name="orderId" value="@order.OrdersId" />
+                                            <input type="hidden" name="status" value="@OrderStatus.Shipped" />
+                                            <button type="submit" class="btn btn-warning btn-sm">Giao hàng</button>
+                                        </form>
+                                    }
+                                    else if (order.OrderStatus == OrderStatus.Shipped)
+                                    {
+                                        <form asp-action="UpdateOrderStatus" method="post" style="display:inline;">
+                                            <input type="hidden" name="orderId" value="@order.OrdersId" />
+                                            <input type="hidden" name="status" value="@OrderStatus.Delivered" />
+                                            <button type="submit" class="btn btn-success btn-sm">Hoàn tất</button>
+                                        </form>
+                                    }
+
+                                    @if (order.OrderStatus != OrderStatus.Cancelled && order.OrderStatus != OrderStatus.Delivered)
+                                    {
+                                        <form asp-action="UpdateOrderStatus" method="post" style="display:inline;">
+                                            <input type="hidden" name="orderId" value="@order.OrdersId" />
+                                            <input type="hidden" name="status" value="@OrderStatus.Cancelled" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Hủy</button>
+                                        </form>
+                                    }
+                                </div>
                             </td>
                         </tr>
                     }

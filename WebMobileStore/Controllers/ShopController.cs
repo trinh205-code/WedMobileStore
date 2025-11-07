@@ -101,52 +101,67 @@ namespace WebMobileStore.Controllers
             var category = db.Categories.Find(id);
             if (category == null) return NotFound();
 
+            var categoryProducts = db.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductVariants)
+                .Where(p => p.CategoryId == id && p.IsActive)
+                .ToList();
+
+            var expensiveProducts = categoryProducts
+                .OrderByDescending(p => p.Price)
+                .Take(10)
+                .ToList();
+
+            var newProducts = categoryProducts
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(10)
+                .ToList();
+
+            var topSellingProductIds = db.OrderDetails
+                .Include(o => o.ProductVariant)
+                .Where(o => o.ProductVariant.Products.CategoryId == id)
+                .GroupBy(o => o.ProductVariant.Products.ProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    TotalSold = g.Sum(x => x.Quantity)
+                })
+                .OrderByDescending(x => x.TotalSold)
+                .Take(10)
+                .ToList();
+
+            var topSellingProducts = db.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductVariants)
+                .Where(p => topSellingProductIds.Select(x => x.ProductId).Contains(p.ProductId))
+                .ToList();
+
+            if (topSellingProducts.Count < 10)
+            {
+                var fillProducts = categoryProducts
+                    .Where(p => !topSellingProducts.Select(x => x.ProductId).Contains(p.ProductId))
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(10 - topSellingProducts.Count)
+                    .ToList();
+
+                topSellingProducts.AddRange(fillProducts);
+            }
+
             var viewModel = new HomeViewModel
             {
                 Categories = db.Categories.ToList(),
-
-                FlashSaleProducts = db.Products
-                    .Include(p => p.ProductImages)
-                    .Include(p => p.ProductVariants)
-                    .Where(p => p.IsActive)
-                    .OrderBy(p => Guid.NewGuid())
-                    .Take(8)
-                    .ToList(),
-
-                RecommendedProducts = db.Products
-                    .Include(p => p.ProductImages)
-                    .Include(p => p.ProductVariants)
-                    .Where(p => p.IsActive)
-                    .OrderByDescending(p => p.CreatedAt)
-                    .Take(12)
-                    .ToList(),
-
-                NewProducts = db.Products
-                    .Include(p => p.ProductImages)
-                    .Include(p => p.ProductVariants)
-                    .Where(p => p.IsActive)
-                    .OrderByDescending(p => p.CreatedAt)
-                    .Take(8)
-                    .ToList(),
-
-                TopSellingProducts = db.Products
-                    .Include(p => p.ProductImages)
-                    .Include(p => p.ProductVariants)
-                    .Where(p => p.IsActive)
-                    .OrderBy(p => Guid.NewGuid())
-                    .Take(8)
-                    .ToList(),
-
+                FlashSaleProducts = expensiveProducts,   
+                RecommendedProducts = expensiveProducts, 
+                NewProducts = newProducts,
+                TopSellingProducts = topSellingProducts,
                 TopBrand = db.Brands
-                    .Where(b => b.CategoryId == 1)
+                    .Where(b => b.CategoryId == id)
                     .ToList() ?? new List<Brand>()
             };
 
             ViewBag.CategoryName = category.CategoryName;
-
             return View("Category", viewModel);
         }
-
 
 
         // GET: /Shop/Search?keyword=iphone
@@ -171,8 +186,6 @@ namespace WebMobileStore.Controllers
 
 
 
-
-        // GET: /Shop/ProductDetail/1
         [HttpGet("Shop/ProductDetail/{id}")]
         public IActionResult ProductDetail(long id)
         {
@@ -184,8 +197,15 @@ namespace WebMobileStore.Controllers
             if (product == null)
                 return NotFound();
 
+            // Kiểm tra nếu không có biến thể hoặc tất cả biến thể hết hàng
+            if (product.ProductVariants == null || !product.ProductVariants.Any(v => v.Quantity > 0))
+            {
+                ViewBag.OutOfStockMessage = "⚠️ Sản phẩm này hiện đã hết hàng.";
+            }
+
             return View(product);
         }
+
 
         [HttpGet("Shop/GetAvailableColors")]
         public IActionResult GetAvailableColors(long productId, string storage)

@@ -770,3 +770,37 @@ tbody tr:hover {
     }
 
 
+    -----------------------order------------------------
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.badge-success {
+    background-color: #16a34a;
+}
+
+.badge-warning {
+    background-color: #f59e0b;
+}
+
+.badge-pending {
+    background-color: #9ca3af;
+}
+
+.badge-cancelled {
+    background-color: #dc2626;
+}
+
+.badge-shipped {
+    background-color: #2563eb;
+}
+
+.action-group .btn {
+    margin: 2px;
+}
+
+

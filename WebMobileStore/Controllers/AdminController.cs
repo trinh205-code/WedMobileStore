@@ -587,6 +587,62 @@ namespace WebMobileStore.Controllers
             }
         }
 
+        [HttpPost("UpdateOrderStatus")]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateOrderStatus(long orderId, OrderStatus status)
+        {
+            var order = db.Orders.FirstOrDefault(o => o.OrdersId == orderId);
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy đơn hàng.";
+                return RedirectToAction("Orders");
+            }
+
+            order.OrderStatus = status;
+
+            // Nếu đã giao xong => tự động chuyển PaymentStatus = Paid
+            if (status == OrderStatus.Delivered)
+            {
+                order.PaymentStatus = PaymentStatus.Paid;
+            }
+
+            db.Orders.Update(order);
+            db.SaveChanges();
+
+            TempData["SuccessMessage"] = $"Đã cập nhật trạng thái đơn hàng #{order.OrdersId} thành {status}";
+            return RedirectToAction("Orders");
+        }
+
+
+        // Chi tiết đơn hàng
+        [HttpGet("OrderDetail/{id}")]
+        public IActionResult OrderDetail(long id)
+        {
+            try
+            {
+                var order = db.Orders
+                    .Include(o => o.User)
+                    .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.ProductVariant)
+                    .ThenInclude(pv => pv.Products)  // Giả sử ProductVariant có liên kết đến Product
+                    .FirstOrDefault(o => o.OrdersId == id);
+
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy đơn hàng.";
+                    return RedirectToAction("Orders");
+                }
+
+                return View(order);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Lỗi tải chi tiết đơn hàng: " + ex.Message;
+                return RedirectToAction("Orders");
+            }
+        }
+
+
 
 
 

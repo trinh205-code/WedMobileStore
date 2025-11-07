@@ -55,7 +55,7 @@
 <div class="section">
     <div class="section-header">
         <h2>🎉 Sản phẩm mới về</h2>
-        <a asp-controller="Shop" asp-action="NewArrivals" class="view-all">Xem tất cả →</a>
+        <a asp-controller="Shop" asp-action="Index" class="view-all">Xem tất cả →</a>
     </div>
     @await Html.PartialAsync("ProductsCartNew", Model.NewProducts)
 </div>
@@ -64,10 +64,32 @@
 <div class="section">
     <div class="section-header">
         <h2>🔥 Bán chạy nhất</h2>
-        <a asp-controller="Shop" asp-action="BestSellers" class="view-all">Xem tất cả →</a>
+        <a asp-controller="Shop" asp-action="Index" class="view-all">Xem tất cả →</a>
     </div>
     @await Html.PartialAsync("_ProductGrid", Model.TopSellingProducts)
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @section Scripts {
     <script>

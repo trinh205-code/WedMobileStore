@@ -50,6 +50,9 @@
         <div class="search-results-grid">
             @foreach (var item in Model)
             {
+                <div class="search-product-card"
+                     onclick="window.location.href='@Url.Action("ProductDetail", "Shop", new { id = item.ProductId })'"
+                     style="cursor:pointer;">
                 <div class="search-product-card" data-product-id="@item.ProductId">
 
                     <!-- Product Badges -->
@@ -81,6 +84,8 @@
                         }
                     </div>
 
+                   
+
                     <!-- Product Details -->
                     <div class="search-product-details">
                         <h3 class="search-product-name">@item.ProductsName</h3>
@@ -108,25 +113,22 @@
 
                         <!-- Action Buttons -->
                         <div class="search-product-actions">
-                            <a asp-controller="Product"
-                               asp-action="Details"
+                            <a asp-controller="Shop"
+                               asp-action="ProductDetail"
                                asp-route-id="@item.ProductId"
                                class="btn-view-details">
-                                Thêm vào giỏ
+                                Mua Ngay
                             </a>
                            
                         </div>
                     </div>
                 </div>
+                </div>
             }
         </div>
     }
 
-    // <button class="btn-add-to-cart"
-    //         onclick="addToCart(@item.ProductId)">
-    //     <span class="cart-icon">🛒</span>
-    //     Thêm vào giỏ
-    // </button>
+
     else
     {
         <!-- No Results Found -->

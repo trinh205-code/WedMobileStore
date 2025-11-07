@@ -55,7 +55,7 @@
                             <span class="product-name">@item.ProductName</span>
                             <span class="product-variant">@item.Color / @item.Storage</span>
                         </div>
-                        <div class="product-quantity">x@item.Quantity</div>
+                        <div class="product-quantity">@($"x{item.Quantity}")</div>
                         <div class="product-price">@item.TotalPrice.ToString("N0")đ</div>
                     </div>
                 }
