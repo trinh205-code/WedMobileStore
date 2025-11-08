@@ -1,0 +1,96 @@
+﻿@model WebMobileStore.Models.Entity.Users
+
+@{
+    ViewData["Title"] = "Thông tin tài khoản";
+}
+
+<link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+
+<div class="profile-container">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            ✓ @TempData["Success"]
+        </div>
+    }
+
+    <div class="profile-layout">
+        <!-- Sidebar -->
+        <div class="profile-sidebar">
+            <div class="profile-avatar-section">
+                <img src="~/image/icons8-account-48.png" alt="Avatar" class="profile-avatar-large" />
+                <div class="profile-name">@Model.FullName</div>
+                <div class="profile-email">@Model.Email</div>
+            </div>
+
+            <ul class="profile-menu">
+                <li>
+                    <a href="@Url.Action("Profile", "User")" class="active">
+                        <span>👤</span> Thông tin tài khoản
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Order" asp-action="Checkout">
+                        <span>💳</span> Đơn hàng
+                    </a>
+
+                </li>
+                <li>
+                    <a href="@Url.Action("ChangePassword", "User")">
+                        <span>🔒</span> Đổi mật khẩu
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Logout", "User")">
+                        <span>🚪</span> Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="profile-content">
+            <div class="profile-header">
+                <h2>Thông tin tài khoản</h2>
+                <a href="@Url.Action("EditProfile", "User")" class="btn-edit">
+                    ✏️ Chỉnh sửa
+                </a>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Họ và tên</div>
+                    <div class="info-value">@Model.FullName</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">@Model.Email</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Số điện thoại</div>
+                    <div class="info-value">@(Model.Phone ?? "Chưa cập nhật")</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Địa chỉ</div>
+                    <div class="info-value">
+                        @(Model.Address != null
+                                                ? $"{Model.Address.Ward}, {Model.Address.District}, {Model.Address.City}" : "Chưa cập nhật")
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Ngày đăng ký</div>
+                    <div class="info-value">@Model.CreatedAt.ToString("dd/MM/yyyy")</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Vai trò</div>
+                    <div class="info-value">@Model.role.ToString()</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

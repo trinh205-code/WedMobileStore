@@ -1,0 +1,120 @@
+﻿@model WebMobileStore.Models.EditProfileViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa thông tin";
+}
+
+<link rel="stylesheet" href="~/css/editprofile.css" asp-append-version="true" />
+
+<div class="profile-container">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            ✓ @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error">
+            ✗ @TempData["Error"]
+        </div>
+    }
+
+    <div class="profile-layout">
+        <!-- Sidebar -->
+        <div class="profile-sidebar">
+            <div class="profile-avatar-section">
+                <img src="~/image/icons8-account-48.png" alt="Avatar" class="profile-avatar-large" />
+                <div class="profile-name">@User.Identity.Name</div>
+                <div class="profile-email">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</div>
+            </div>
+            <ul class="profile-menu">
+                <li>
+                    <a href="@Url.Action("Profile", "User")">
+                        <span>👤</span> Thông tin tài khoản
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="CheckOut" asp-action="Index">
+                        <span>💳</span> Đơn hàng
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="User" asp-action="ChangePassword">
+                        <span>🔒</span> Đổi mật khẩu
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Logout", "User")">
+                        <span>🚪</span> Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="profile-content">
+            <div class="profile-header">
+                <h2>✏️ Chỉnh sửa thông tin tài khoản</h2>
+            </div>
+
+            <div class="change-password-form">
+                <form asp-controller="User" asp-action="EditProfile" method="post" autocomplete="off">
+                    <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+                    <div class="field">
+                        <label asp-for="FullName" class="req">Họ và tên</label>
+                        <input asp-for="FullName" type="text" class="form-input" placeholder="Nhập họ và tên" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="field">
+                        <label asp-for="Email" class="req">Email</label>
+                        <input asp-for="Email" type="email" class="form-input" placeholder="Nhập email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <small class="field-hint">Email sẽ được sử dụng để đăng nhập và nhận thông báo</small>
+                    </div>
+
+                    <div class="field">
+                        <label asp-for="PhoneNumber">Số điện thoại</label>
+                        <input asp-for="PhoneNumber" type="tel" class="form-input" placeholder="Nhập số điện thoại" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="field">
+                        <label asp-for="Address">Địa chỉ</label>
+                        <textarea asp-for="Address" class="form-input" rows="3" placeholder="Nhập địa chỉ"></textarea>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="field">
+                        <label asp-for="CurrentPassword" class="req">Mật khẩu hiện tại (để xác nhận)</label>
+                        <input asp-for="CurrentPassword" type="password" class="form-input" placeholder="Nhập mật khẩu để xác nhận thay đổi" />
+                        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                        <small class="field-hint">Bạn cần nhập mật khẩu để xác nhận các thay đổi quan trọng</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="@Url.Action("Profile", "User")" class="btn-cancel">Hủy</a>
+                        <button type="submit" class="btn-submit">💾 Lưu thay đổi</button>
+                    </div>
+                </form>
+
+                <div class="password-tips">
+                    <h3>ℹ️ Lưu ý:</h3>
+                    <ul>
+                        <li>Email phải là địa chỉ email hợp lệ và chưa được sử dụng</li>
+                        <li>Số điện thoại nên có định dạng 10 số</li>
+                        <li>Bạn cần nhập đúng mật khẩu hiện tại để xác nhận thay đổi</li>
+                        <li>Sau khi đổi email, bạn sẽ đăng nhập bằng email mới</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

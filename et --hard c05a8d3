@@ -1,0 +1,27 @@
+[33mc282fff[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: rebase (finish): returning to refs/heads/main
+[33mc282fff[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{1}: commit: update
+[33mc05a8d3[m HEAD@{2}: pull --rebase origin main (start): checkout c05a8d31349d2eadf5061ebaaa8d0a4c0716d8eb
+[33m0d88c65[m HEAD@{3}: commit: update 8/11
+[33m67bb7fd[m HEAD@{4}: commit: update 8/11
+[33m40df049[m HEAD@{5}: commit: update 8/11
+[33mfdc1a26[m HEAD@{6}: commit: update 6/11
+[33m853a409[m HEAD@{7}: commit: update 6/11
+[33m23d3f94[m HEAD@{8}: commit: update 6/11
+[33m0cd45e7[m HEAD@{9}: commit: update 5/11
+[33m0cb6da2[m HEAD@{10}: commit: update 5/11
+[33medc6c79[m HEAD@{11}: commit: update 16/10 admin
+[33m73fbb4c[m HEAD@{12}: commit: update 20/10
+[33m4f227e6[m HEAD@{13}: commit: update 19/10
+[33m30ff950[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{14}: checkout: moving from master to main
+[33m30ff950[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{15}: merge origin/main: Fast-forward
+[33m5ed1b4d[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{16}: checkout: moving from master to master
+[33m5ed1b4d[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{17}: checkout: moving from main to master
+[33m30ff950[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{18}: commit: update 17/10
+[33mfe0fac3[m HEAD@{19}: commit: update 16/10
+[33m549eabd[m HEAD@{20}: commit: thêm các layout,...
+[33m3f30f28[m HEAD@{21}: commit: thêm Dữ liệu cho DbInitializer
+[33maaaade1[m HEAD@{22}: commit: Cập nhật Annotation
+[33md216184[m HEAD@{23}: commit: Cập nhật annotation-DbConext
+[33m84591a0[m HEAD@{24}: pull origin main --allow-unrelated-histories: Merge made by the 'ort' strategy.
+[33m5ed1b4d[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{25}: Branch: renamed refs/heads/master to refs/heads/main
+[33m5ed1b4d[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{27}: commit (initial): Initial commit - cleaned up ignored files
