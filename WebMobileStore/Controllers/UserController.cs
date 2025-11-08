@@ -63,8 +63,7 @@ namespace WebMobileStore.Controllers
         [HttpPost("Create")]
         public IActionResult Create(Users model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
+           
 
             if (db.Users.Any(u => u.Email == model.Email))
             {
