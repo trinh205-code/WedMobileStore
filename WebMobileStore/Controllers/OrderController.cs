@@ -37,7 +37,6 @@ namespace WebMobileStore.Controllers
 
             if (user == null) return RedirectToAction("Index", "Shop");
 
-            // Filter chỉ lấy item có ProductVariant không null
             var cartItems = user.Carts?.Items?.Where(ci => ci.ProductVariant != null)?.ToList() ?? new List<CartItem>();
 
             var model = new CheckoutViewModel
@@ -46,12 +45,10 @@ namespace WebMobileStore.Controllers
                 CartItems = cartItems,
                 ShippingFee = 30000,
 
-                // Pre-fill thông tin từ user
                 FullName = user.FullName,
                 Phone = user.Phone,
                 Email = user.Email,
 
-                // Pre-fill địa chỉ nếu đã có
                 Ward = user.Address?.Ward ?? "",
                 District = user.Address?.District ?? "",
                 City = user.Address?.City ?? ""
@@ -66,33 +63,9 @@ namespace WebMobileStore.Controllers
         {
             try
             {
-                // Loại bỏ validation cho các trường không cần thiết
                 ModelState.Remove("User");
                 ModelState.Remove("CartItems");
-
-                //if (!ModelState.IsValid)
-                //{
-                //    // Reload dữ liệu
-                //    var userIdClaim = User.FindFirst("UserId");
-                //    if (userIdClaim != null)
-                //    {
-                //        var userId = long.Parse(userIdClaim.Value);
-                //        var reloadedUser = db.Users
-                //            .Include(u => u.Address)
-                //            .Include(u => u.Carts)
-                //                .ThenInclude(c => c.Items)
-                //                    .ThenInclude(ci => ci.ProductVariant)
-                //                        .ThenInclude(pv => pv.Products)
-                //                            .ThenInclude(p => p.ProductImages)
-                //            .FirstOrDefault(u => u.UserId == userId);
-
-                //        model.User = reloadedUser;
-                //        model.CartItems = reloadedUser?.Carts?.Items?.Where(ci => ci.ProductVariant != null)?.ToList() ?? new List<CartItem>();
-                //    }
-
-                //    TempData["ErrorMessage"] = "Dữ liệu nhập không hợp lệ. Vui lòng kiểm tra lại.";
-                //    return View("Index", model);
-                //}
+          
 
                 var currentUserIdClaim = User.FindFirst("UserId");
                 if (currentUserIdClaim == null)
@@ -165,7 +138,6 @@ namespace WebMobileStore.Controllers
                     db.Users.Update(currentUser);
                 }
 
-                // Cập nhật hoặc tạo địa chỉ
                 if (currentUser.Address == null)
                 {
                     currentUser.Address = new Address
@@ -187,7 +159,6 @@ namespace WebMobileStore.Controllers
 
                 db.SaveChanges();
 
-                // ✅ Tạo địa chỉ đầy đủ từ 3 trường
                 string fullAddress = $"{model.Ward}, {model.District}, {model.City}";
 
                 var payment = new Payment
@@ -198,13 +169,13 @@ namespace WebMobileStore.Controllers
                 };
 
                 db.Payments.Add(payment);
-                db.SaveChanges(); // cần lưu trước để có PaymentId
+                db.SaveChanges(); 
 
                 // Tạo đơn hàng
                 var order = new Orders
                 {
                     UserId = currentUserId,
-                    Address = fullAddress,  // ✅ Ghép 3 trường lại
+                    Address = fullAddress,  
                     Ward = model.Ward,
                     District = model.District,
                     City = model.City,
@@ -229,6 +200,20 @@ namespace WebMobileStore.Controllers
                 using var transaction = db.Database.BeginTransaction();
 
                 db.Orders.Add(order);
+                db.SaveChanges();
+
+
+                // Giảm số lượng sản phẩm
+                foreach (var item in cartItems)
+                {
+                    if (item.ProductVariant != null)
+                    {
+                        item.ProductVariant.Quantity -= item.Quantity;
+                        if (item.ProductVariant.Quantity < 0)
+                            item.ProductVariant.Quantity = 0;
+                        db.ProductVariants.Update(item.ProductVariant);
+                    }
+                }
                 db.SaveChanges();
 
                 // Xóa giỏ hàng

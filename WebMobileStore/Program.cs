@@ -11,7 +11,14 @@ builder.Services.AddDbContext<MobileStoreContext>(options =>
 // Add services to the container
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor(); // 🔥 Thêm dòng này
-
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+ 
 
 // Cấu hình Authentication Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -40,6 +47,9 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
+
 
 // 🟢 Thứ tự rất quan trọng:
 app.UseAuthentication(); // Luôn trước Authorization

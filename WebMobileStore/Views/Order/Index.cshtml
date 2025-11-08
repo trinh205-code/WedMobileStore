@@ -30,8 +30,6 @@
             <input asp-for="Email" placeholder="Email" class="checkout__input" type="email" required />
             <span asp-validation-for="Email" class="text-danger"></span>
 
-            <!-- ❌ XÓA phần địa chỉ chi tiết -->
-            <!-- CHỈ CÒN 3 trường này -->
             <div class="checkout__input-row">
                 <input asp-for="Ward" placeholder="Phường/Xã" class="checkout__input" required />
                 <input asp-for="District" placeholder="Quận/Huyện" class="checkout__input" required />
@@ -42,7 +40,6 @@
             <input asp-for="City" placeholder="Tỉnh/Thành phố" class="checkout__input" required />
             <span asp-validation-for="City" class="text-danger"></span>
 
-            <!-- Hidden fields -->
             <input type="hidden" asp-for="ShippingFee" />
 
             <!-- Hình thức thanh toán -->
@@ -137,7 +134,7 @@
                                 firstImage = item.ProductVariant.Products.ProductImages.First().ImageUrl;
                             }
                         }
-                        <img src="@firstImage" alt="@item.ProductVariant?.Products?.ProductsName ?? " Sản phẩm"" />
+                        <img src="@firstImage" alt="@item.ProductVariant?.Products?.ProductsName ?? " Sản phẩm" />
 
                         <div class="cart-item__quantity-wrapper">
                             <button type="button" class="qty-btn qty-decrease">-</button>
@@ -147,8 +144,8 @@
                     </div>
 
                     <div class="cart-item__info">
-                        <span class="cart-item__name">@item.ProductVariant?.Products?.ProductsName ?? "Sản phẩm"</span>
-                        <span class="cart-item__variant">@item.ProductVariant?.Color ?? "" / @item.ProductVariant?.Storage ?? ""</span>
+                        <span class="cart-item__name">@item.ProductVariant?.Products?.ProductsName</span>
+                        <span class="cart-item__variant">@item.ProductVariant?.Color / @item.ProductVariant?.Storage </span>
                     </div>
 
                     <span class="cart-item__price" data-unit-price="@item.ProductVariant?.Price ?? 0">

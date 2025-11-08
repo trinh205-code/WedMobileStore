@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebMobileStore.Models.Data;
 using WebMobileStore.Models.Entity;
+using WebMobileStore.Models.Entity.Enums;
 using WebMobileStore.ViewModels;
 
 namespace WebMobileStore.Controllers
@@ -190,21 +191,40 @@ namespace WebMobileStore.Controllers
         public IActionResult ProductDetail(long id)
         {
             var product = db.Products
-                .Include(p => p.ProductVariants)
-                .Include(p => p.ProductImages)
-                .FirstOrDefault(p => p.ProductId == id);
+            .Include(p => p.ProductVariants)
+            .ThenInclude(v => v.OrderDetails) 
+            .Include(p => p.ProductImages)
+            .FirstOrDefault(p => p.ProductId == id);
+
 
             if (product == null)
                 return NotFound();
 
-            // Kiểm tra nếu không có biến thể hoặc tất cả biến thể hết hàng
+            // 🔹 Tính tổng đánh giá
+            int reviewCount = product.Reviews?.Count() ?? 0;
+
+            // 🔹 Tính trung bình sao
+            double avgRating = reviewCount > 0 ? product.Reviews.Average(r => r.Rating) : 5.0;
+
+            int soldCount = product.ProductVariants?
+            .SelectMany(v => v.OrderDetails ?? new List<OrderDetail>())  
+            .Where(od => od.Orders != null && od.Orders.OrderStatus == OrderStatus.Completed)
+            .Sum(od => od.Quantity) ?? 0;
+
+
+            // 🔹 Kiểm tra hết hàng
             if (product.ProductVariants == null || !product.ProductVariants.Any(v => v.Quantity > 0))
             {
                 ViewBag.OutOfStockMessage = "⚠️ Sản phẩm này hiện đã hết hàng.";
             }
 
+            ViewBag.ReviewCount = reviewCount;
+            ViewBag.AvgRating = avgRating;
+            ViewBag.SoldCount = soldCount;
+
             return View(product);
         }
+
 
 
         [HttpGet("Shop/GetAvailableColors")]

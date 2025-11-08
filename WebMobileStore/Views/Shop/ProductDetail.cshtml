@@ -73,8 +73,9 @@
                     <i class="fas fa-star"></i>
                     <span style="margin-left: 5px; color: #333; font-weight: 600;">5.0</span>
                 </div>
-                <span class="rating-count">1,4k Đánh Giá</span>
-                <span class="sold-count">Đã Bán 9k+</span>
+                <span style="margin-left: 5px; color: #333; font-weight: 600;">@ViewBag.AvgRating.ToString("0.0")</span>
+                <span class="rating-count">@ViewBag.ReviewCount Đánh Giá</span>
+                <span class="sold-count">Đã Bán @ViewBag.SoldCount.ToString("N0")</span>
             </div>
 
             <div class="price-section">
