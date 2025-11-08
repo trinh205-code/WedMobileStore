@@ -53,11 +53,11 @@ namespace WebMobileStore.Controllers
             return View();
         }
 
-
         [HttpGet("Create")]
         public IActionResult Create()
         {
-            return View();
+
+            return View("Create");
         }
 
         [HttpPost("Create")]
@@ -172,7 +172,6 @@ namespace WebMobileStore.Controllers
             return RedirectToAction("Profile");
         }
 
-        // Thêm vào UserController.cs (sau action ChangePassword hiện tại)
 
         [HttpGet("EditProfile")]
         public IActionResult EditProfile()
@@ -229,7 +228,6 @@ namespace WebMobileStore.Controllers
                 return View(model);
             }
 
-            // Kiểm tra email mới có trùng với người dùng khác không
             if (model.Email != user.Email)
             {
                 var existingUser = db.Users.FirstOrDefault(u => u.Email == model.Email);

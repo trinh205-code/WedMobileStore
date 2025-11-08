@@ -47,7 +47,9 @@
 
 
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-                    <div class="small">Đã có tài khoản? <a href="#">Đăng nhập</a></div>
+                    <a asp-controller="User" asp-action="Login" class="small">
+                        Đã có tài khoản? <span style="color:#007bff; font-weight:500;">Đăng nhập</span>
+                    </a>
                     <button class="btn" type="submit">Tạo tài khoản</button>
                 </div>
             </div>
